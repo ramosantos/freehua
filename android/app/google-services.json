@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "912869104324",
+    "project_id": "freehua-db",
+    "storage_bucket": "freehua-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912869104324:android:56db4bcca96e114cfb0791",
+        "android_client_info": {
+          "package_name": "com.freehua"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "912869104324-emr4f803erh27f1o29ftm6sr4m0tked2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_Bob92m05FCRA5VPpP7i0EYJD6jXRcog"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "912869104324-emr4f803erh27f1o29ftm6sr4m0tked2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
