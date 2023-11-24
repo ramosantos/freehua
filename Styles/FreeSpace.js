@@ -5,8 +5,8 @@ export default FreeSpace = {
     colors: {
         ...DarkTheme.colors,
         card: '#144272',
-        background: '#0A2647',
+        background: '#ffff',
         border: '#205295',
-        primary: '#2C74B3',
+        primary: '#FF914D',
     }
 }

@@ -8,11 +8,11 @@ export default styles = StyleSheet.create({
     aspectRatio: 1 / 1.4,
     height: 300,
     borderRadius: 8,
-    borderColor: 'gray',
+    borderColor: 'orange',
     borderWidth: 1,
   },
   title: {
-    color: 'white',
+    color: 'black',
     marginTop: 12,
     fontSize: 26,
     padding: 8,
@@ -24,12 +24,12 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
   },
   author: {
-    color: 'white',
+    color: 'black',
     fontSize: 20,
     marginBottom: 20,
   },
   summary: {
-    color: 'white',
+    color: 'black',
     fontSize: 18,
     fontStyle: 'italic',
     textAlign: 'justify',
