@@ -8,7 +8,7 @@ export default styles = StyleSheet.create({
     aspectRatio: 1 / 1.4,
     height: 300,
     borderRadius: 8,
-    borderColor: 'gray',
+    borderColor: 'orange',
     borderWidth: 1,
   },
   title: {
