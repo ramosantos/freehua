@@ -40,7 +40,13 @@ export async function getChapters(reference) {
   const chaptersReference = collection(db, `books/${reference}/chapters`);
   try {
     const snapshot = await getDocs(query(chaptersReference));
-    const newChapters = snapshot.docs.map(doc => doc.data());
+    const newChapters = snapshot.docs.map(doc => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          };
+        });
+
     return newChapters;
   } catch (error) {
     console.error('Error fetching chapters: ', error);
@@ -48,7 +54,7 @@ export async function getChapters(reference) {
   }
 }
 
-async function getUser() {
+export async function getUser() {
   try {
     const userCredential = await EncryptedStorage.getItem('userCredential');
     const userData = JSON.parse(userCredential);

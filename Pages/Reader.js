@@ -10,7 +10,8 @@ export default function Reader({route, navigation}) {
   const Stack = createNativeStackNavigator();
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName={'Shower'}>
+
       <Stack.Screen
         name="Shower"
         component={Shower}
@@ -26,10 +27,12 @@ export default function Reader({route, navigation}) {
         }}
         initialParams={{chapter: route.params.file}}
       />
+
       <Stack.Screen
         name="Chat"
         component={Chat}
         options={{tabBarButton: () => null}}
+        initialParams={{chapter: route.params.file}}
       />
     </Stack.Navigator>
   );
