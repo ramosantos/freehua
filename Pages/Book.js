@@ -15,11 +15,11 @@ export default function Book({route, navigation}) {
     try {
       if (wasPressed) {
         const wasDisliked = await dislikeBook(source.id);
-        setColor('white');
+        setColor('black');
         setWasPressed(false);
       } else {
         const wasLiked = await likeBook(source.id);
-        setColor('red');
+        setColor('orange');
         setWasPressed(true);
       }
     } catch (error) {
@@ -34,10 +34,10 @@ export default function Book({route, navigation}) {
         setChapters(chaptersData);
         const alreadyLiked = await getLike(source.id);
         if (alreadyLiked === true) {
-          setColor('red');
+          setColor('orange');
           setWasPressed(true);
         } else {
-          setColor('white');
+          setColor('black');
           setWasPressed(false);
         }
       } catch (error) {

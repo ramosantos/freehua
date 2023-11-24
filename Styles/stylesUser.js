@@ -13,12 +13,12 @@ export default styles = StyleSheet.create({
     borderWidth: 1,
   },
   username: {
-    color: 'white',
+    color: 'black',
     fontSize: 36,
     marginTop: 12,
   },
   karma: {
-    color: 'white',
+    color: 'black',
     marginTop: 12,
     fontSize: 18,
     fontStyle: 'italic',
