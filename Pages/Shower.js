@@ -14,12 +14,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 export default function Shower({navigation, route}) {
   const {file, files, order, master} = route.params;
   const loadedChapter = JSON.parse(file);
-  const [pdfSource, setPdfSource] = useState(loadedChapter.chapter_content);
   const waitlist = JSON.parse(files);
+  const [pdfSource, setPdfSource] = useState(loadedChapter.chapter_content);
   const [isHeaderVisible, setHeaderVisible] = useState(false);
   const [pagesAtMoment, setPagesAtMoment] = useState(0);
   const [isLastChapter, setIsLastChapter] = useState(false);
   const [isFirstChapter, setIsFirstChapter] = useState(false);
+  const [book, setBook] = useState(master);
 
   const toggleHeaderVisibility = () => {
     setHeaderVisible(!isHeaderVisible);
@@ -27,10 +28,28 @@ export default function Shower({navigation, route}) {
     navigation.setParams({tabBarOptions: {visible: isHeaderVisible}});
   };
 
-  const tomes = JSON.parse(files);
+  useEffect(() => {
+    setBook(master);
+    navigation.setOptions({
+      headerLeft: ({color, size}) => (
+        <TouchableOpacity
+          style={{paddingLeft: 12}}
+          onPress={() => {
+            navigation.navigate('Book', {source: book});
+          }}>
+          <Ionicons name="book" color={'white'} size={40} />
+        </TouchableOpacity>
+      ),
+    });
+  }, [master]);
 
   useEffect(() => {
+    setPdfSource(loadedChapter.chapter_content);
+      console.log(pdfSource);
+    setIsLastChapter(order === 0);
+    setIsFirstChapter(order === waitlist.length - 1);
     navigation.setOptions({
+      title: `Capítulo ${loadedChapter.chapter_order}`,
       headerRight: ({color, size}) => (
         <TouchableOpacity
           style={{paddingRight: 12}}
@@ -38,43 +57,23 @@ export default function Shower({navigation, route}) {
           <Ionicons name="chatbox" color={'white'} size={40} />
         </TouchableOpacity>
       ),
-      headerLeft: ({color, size}) => (
-        <TouchableOpacity
-          style={{paddingLeft: 12}}
-          onPress={() => {
-            navigation.navigate('Book', {source: master});
-          }}>
-          <Ionicons name="book" color={'white'} size={40} />
-        </TouchableOpacity>
-      ),
     });
-  }, []);
+  }, [file, order]);
 
-  useEffect(() => {
-    setPdfSource(loadedChapter.chapter_content);
-    setIsLastChapter(order === waitlist.length ? true : false);
-    setIsFirstChapter(order === 1 ? true : false);
-    navigation.setOptions({
-      title: `Capítulo ${order}`,
-    });
-      console.log(order);
-  }, [file]);
-
-    // TODO: TÁ UMA BOSTA PRECISA CONSERTAR FUNÇÃO DE IR E VOLTAR
   const goNext = async () => {
     navigation.navigate('Shower', {
-      file: JSON.stringify(tomes[order]),
+      file: JSON.stringify(waitlist[order - 1]),
       files: files,
-      order: order + 1,
+      order: order - 1,
       parent: master,
     });
   };
 
   const goBack = async () => {
     navigation.navigate('Shower', {
-      file: JSON.stringify(tomes[order - 2]),
+      file: JSON.stringify(waitlist[order + 1]),
       files: files,
-      order: order - 1,
+      order: order + 1,
       parent: master,
     });
   };

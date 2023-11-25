@@ -23,4 +23,29 @@ export default styles = StyleSheet.create({
     fontSize: 18,
     fontStyle: 'italic',
   },
+  box_history: {
+    marginTop: 36,
+  },
+  text_history_header: {
+    fontSize: 24,
+    marginLeft: 24,
+    fontStyle: 'italic',
+    color: 'white',
+  },
+  box_history_header_update: {
+    backgroundColor: '#205295',
+    justifyContent: 'center',
+height: 60,
+    flex: 1,
+  },
+  box_entry: {
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    height: 50,
+  },
+  text_entry: {
+    fontStyle: 'italic',
+    color: 'white',
+    fontSize: 16,
+  },
 });

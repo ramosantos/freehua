@@ -16,7 +16,7 @@ import {
   updateDoc,
   setDoc,
   getFirestore,
-    getDoc,
+  getDoc,
 } from 'firebase/firestore';
 
 const auth = FIREBASE_AUTH;
@@ -93,20 +93,22 @@ const storageUser = async (userId, username) => {
 };
 
 export const getUserData = async () => {
-    try {
-        const userCredential = await EncryptedStorage.getItem('userCredential');
-        if (userCredential === null){ return; }
-        const userEntries = JSON.parse(userCredential);
-        const userReference = doc(db, `users/${userEntries.user.uid}`);
-        const fetchedUser = await getDoc(userReference);
-        if (fetchedUser) {
-            return fetchedUser.data();
-        }
-        return;
-    } catch (error) {
-        console.log(error);
+  try {
+    const userCredential = await EncryptedStorage.getItem('userCredential');
+    if (userCredential === null) {
+      return;
     }
-}
+    const userEntries = JSON.parse(userCredential);
+    const userReference = doc(db, `users/${userEntries.user.uid}`);
+    const fetchedUser = await getDoc(userReference);
+    if (fetchedUser) {
+      return fetchedUser.data();
+    }
+    return;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export async function getUser() {
   try {
@@ -119,3 +121,28 @@ export async function getUser() {
     return false;
   }
 }
+
+export const getUserHistory = async () => {
+  try {
+    const userData = await getUserData();
+    const userHistory = userData.user_history;
+    const newEntries = Promise.all(
+      userHistory.slice(0, 5).reverse().map(async entry => {
+        const entryParentId = entry._key.path.segments[6];
+        const entryReference = doc(db, entry.path);
+        const entryParentReference = doc(db, 'books', entryParentId);
+        const entryParent = await getDoc(entryParentReference);
+        const entryParentName = entryParent.data().book_title;
+        const entryDoc = await getDoc(entryReference);
+          return {
+            id: entryDoc.id,
+            chapter_parent_name: entryParentName,
+            ...entryDoc.data(),
+          };
+      })
+    );
+    return newEntries;
+  } catch (error) {
+    alert(error);
+  }
+};

@@ -11,6 +11,7 @@ import {
   arrayRemove,
   updateDoc,
   ref,
+  orderBy,
 } from 'firebase/firestore';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {getUser, getUserData} from './Logger';
@@ -41,7 +42,9 @@ export async function getChapters(reference) {
   const chaptersReference = collection(db, `books/${reference}/chapters`);
   try {
     const userData = await getUserData();
-    const snapshot = await getDocs(query(chaptersReference));
+    const snapshot = await getDocs(
+      query(chaptersReference, orderBy('chapter_order', 'desc')),
+    );
     const newChapters = Promise.all(
       snapshot.docs.map(async chapter => {
         const chapterPosterId = chapter.data().chapter_poster;
@@ -106,17 +109,11 @@ export const dislikeBook = async reference => {
 
 export const getLike = async reference => {
   try {
-    const userId = await getUser();
-    if (!userId) {
-      return false;
-    }
-
     const bookReference = doc(db, `books/${reference}`);
-    const userReference = doc(db, `users/${userId}`);
-    const userDoc = await getDoc(userReference);
+    const userDoc = await getUserData();
 
-    if (userDoc.exists()) {
-      const userLikes = userDoc.data().user_likes;
+    if (userDoc) {
+      const userLikes = userDoc.user_likes;
       const userLikesString = JSON.stringify(userLikes);
       const isLiked = userLikesString.includes(reference);
       if (isLiked) {
@@ -134,13 +131,7 @@ export const getLike = async reference => {
 
 export const getLibrary = async () => {
   try {
-    const userId = await getUser();
-    if (!userId) {
-      return false;
-    }
-
-    const userReference = doc(db, `users/${userId}`);
-    const userData = await getDoc(userReference);
+    const userData = await getUserData();
     if (userData.exists()) {
       const libraryData = userData.data().user_likes;
       const fetchedLikes = await Promise.all(
@@ -210,3 +201,5 @@ export const forgetChapter = async loadedChapter => {
     return false;
   }
 };
+
+

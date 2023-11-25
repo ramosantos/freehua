@@ -37,7 +37,7 @@ export default function Likes({navigation, route}) {
       <View style={styles.pack}>
         {books.map((book, index) => (
           <TouchableOpacity
-            onPress={() => navigation.navigate('Book', {source: book})}
+            onPress={() => navigation.navigate('Book', {source: JSON.stringify(book)})}
             key={index}>
             <BookCard
               place={index}

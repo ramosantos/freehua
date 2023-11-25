@@ -14,6 +14,7 @@ import {
 
 export default function Book({route, navigation}) {
   const {source} = route.params;
+    const book = JSON.parse(source);
   const [chapters, setChapters] = useState([]);
   const [color, setColor] = useState('white');
   const [wasPressed, setWasPressed] = useState(null);
@@ -21,11 +22,11 @@ export default function Book({route, navigation}) {
   const like = async () => {
     try {
       if (wasPressed) {
-        await dislikeBook(source.id);
+        await dislikeBook(book.id);
         setColor('white');
         setWasPressed(false);
       } else {
-        await likeBook(source.id);
+        await likeBook(book.id);
         setColor('#FF914D');
         setWasPressed(true);
       }
@@ -52,7 +53,7 @@ export default function Book({route, navigation}) {
   useFocusEffect(() => {
     const refreshChapters = async () => {
       try {
-        const chaptersData = await getChapters(source.id);
+        const chaptersData = await getChapters(book.id);
         setChapters(chaptersData);
       } catch (error) {
         alert(error);
@@ -64,7 +65,7 @@ export default function Book({route, navigation}) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const alreadyLiked = await getLike(source.id);
+        const alreadyLiked = await getLike(book.id);
         if (alreadyLiked === true) {
           setColor('orange');
           setWasPressed(true);
@@ -96,28 +97,26 @@ export default function Book({route, navigation}) {
   return (
     <ScrollView style={styles.area}>
       <View style={styles.front}>
-        <Image style={styles.cover} source={{uri: source.cover_url}} />
-        <Text style={styles.title}>{source.book_title}</Text>
+        <Image style={styles.cover} source={{uri: book.cover_url}} />
+        <Text style={styles.title}>{book.book_title}</Text>
         <Text style={styles.author}>
-          {source.book_type === 'Manhwa' ? `Manhwa` : `Manhua`} feito por{' '}
-          {source.book_author}
+          {book.book_type === 'Manhwa' ? `Manhwa` : `Manhua`} feito por{' '}
+          {book.book_author}
         </Text>
-        <Text style={styles.summary}>{source.book_summary}</Text>
+        <Text style={styles.summary}>{book.book_summary}</Text>
         <TouchableOpacity style={styles.like} onPress={like}>
           <Ionicons name="bookmark" color={color} size={42} />
         </TouchableOpacity>
       </View>
       <View style={styles.legend}>
         {chapters.map((chapter, index) => (
-          <View
-            style={{flex: 1, flexDirection: 'row'}}
-            key={chapter.chapter_order}>
+          <View style={{flex: 1, flexDirection: 'row'}} key={index}>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('Shower', {
                   file: JSON.stringify(chapter),
-                  order: index-1,
-                  master: source,
+                  order: index,
+                  master: JSON.stringify(book),
                   files: JSON.stringify(chapters),
                 });
               }}
@@ -126,7 +125,7 @@ export default function Book({route, navigation}) {
                 backgroundColor: chapter.viewed ? '#872341' : '#144272',
               }}>
               <Text style={styles.subtitle}>
-                Capítulo {chapter.chapter_order}
+                Capítulo {chapter.chapter_order} Ordem {index}
               </Text>
               <Text style={styles.date}>
                 {chapter.chapter_release.toDate().toLocaleDateString('pt-BR')}{' '}

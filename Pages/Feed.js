@@ -33,7 +33,7 @@ export default function Feed({navigation}) {
           style={{flexDirection: 'row'}}>
           {books.map((book, index) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate('Book', {source: book})}
+              onPress={() => navigation.navigate('Book', {source: JSON.stringify(book)})}
               key={index}>
               <BookCard
                 place={index}
