@@ -34,7 +34,7 @@ export async function getBooks() {
     return newBooks;
   } catch (error) {
     console.error('Error fetching books: ', error);
-    return [];
+    return undefined;
   }
 }
 
@@ -147,6 +147,7 @@ export const getLibrary = async () => {
       return fetchedLikes;
     }
   } catch (error) {
+      return undefined;
     console.log(error);
   }
 };

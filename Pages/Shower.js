@@ -20,28 +20,26 @@ export default function Shower({navigation, route}) {
   const [pagesAtMoment, setPagesAtMoment] = useState(0);
   const [isLastChapter, setIsLastChapter] = useState(false);
   const [isFirstChapter, setIsFirstChapter] = useState(false);
-  const [book, setBook] = useState(master);
 
   const toggleHeaderVisibility = () => {
     setHeaderVisible(!isHeaderVisible);
-    navigation.setOptions({headerShown: isHeaderVisible});
-    navigation.setParams({tabBarOptions: {visible: isHeaderVisible}});
+    navigation.setOptions({headerShown: !isHeaderVisible});
+    navigation.setParams({tabBarOptions: {visible: !isHeaderVisible}});
   };
 
   useEffect(() => {
-    setBook(master);
     navigation.setOptions({
       headerLeft: ({color, size}) => (
         <TouchableOpacity
           style={{paddingLeft: 12}}
           onPress={() => {
-            navigation.navigate('Book', {source: book});
+            navigation.navigate('Book', {source: master});
           }}>
           <Ionicons name="book" color={'white'} size={40} />
         </TouchableOpacity>
       ),
     });
-  }, [master]);
+  }, []);
 
   useEffect(() => {
     setPdfSource(loadedChapter.chapter_content);
@@ -60,21 +58,12 @@ export default function Shower({navigation, route}) {
     });
   }, [file, order]);
 
-  const goNext = async () => {
+  const goTo = async direction => {
     navigation.navigate('Shower', {
-      file: JSON.stringify(waitlist[order - 1]),
+      file: JSON.stringify(waitlist[order + direction]),
       files: files,
-      order: order - 1,
-      parent: master,
-    });
-  };
-
-  const goBack = async () => {
-    navigation.navigate('Shower', {
-      file: JSON.stringify(waitlist[order + 1]),
-      files: files,
-      order: order + 1,
-      parent: master,
+      order: order + direction,
+      master: master,
     });
   };
 
@@ -98,16 +87,16 @@ export default function Shower({navigation, route}) {
         style={styles.headerButton}
         onPress={toggleHeaderVisibility}
       />
-      {isHeaderVisible || (
+      {isHeaderVisible && (
         <View style={styles.box_pages}>
           {!isFirstChapter && (
-            <TouchableOpacity style={styles.next} onPress={() => goBack()}>
+            <TouchableOpacity style={styles.next} onPress={() => goTo(+1)}>
               <Ionicons name="arrow-back" color={'white'} size={40} />
             </TouchableOpacity>
           )}
           <Text style={styles.text_pages}>{pagesAtMoment}</Text>
           {!isLastChapter && (
-            <TouchableOpacity style={styles.next} onPress={() => goNext()}>
+            <TouchableOpacity style={styles.next} onPress={() => goTo(-1)}>
               <Ionicons name="arrow-forward" color={'white'} size={40} />
             </TouchableOpacity>
           )}

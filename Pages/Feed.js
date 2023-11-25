@@ -13,13 +13,24 @@ import {getBooks} from '../Scripts/Booker';
 
 export default function Feed({navigation}) {
   const [books, setBooks] = useState([]);
+  const [isFeedEmpty, setIsFeedEmpty] = useState(true);
 
   useEffect(() => {
     const fetchBooks = async () => {
-      const fetchedBooks = await getBooks();
-      setBooks(fetchedBooks);
+      try {
+        const fetchedBooks = await getBooks();
+        if (fetchedBooks === undefined) {
+          setIsFeedEmpty(true);
+          return;
+        }
+
+        setBooks(fetchedBooks);
+        setIsFeedEmpty(false);
+      } catch (error) {
+        console.log(error);
+      }
     };
-    
+
     fetchBooks();
   }, []);
 
@@ -31,17 +42,20 @@ export default function Feed({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{flexDirection: 'row'}}>
-          {books.map((book, index) => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Book', {source: JSON.stringify(book)})}
-              key={index}>
-              <BookCard
-                place={index}
-                title={book.book_title}
-                cover={book.cover_url}
-              />
-            </TouchableOpacity>
-          ))}
+          {!isFeedEmpty &&
+            books.map((book, index) => (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Book', {source: JSON.stringify(book)})
+                }
+                key={index}>
+                <BookCard
+                  place={index}
+                  title={book.book_title}
+                  cover={book.cover_url}
+                />
+              </TouchableOpacity>
+            ))}
         </ScrollView>
       </View>
     </ScrollView>

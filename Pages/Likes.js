@@ -13,14 +13,21 @@ import {useFocusEffect} from '@react-navigation/native';
 
 export default function Likes({navigation, route}) {
   const [books, setBooks] = useState([]);
+  const [isLibraryEmpty, setIsLibraryEmpty] = useState(true);
 
   useFocusEffect(
     React.useCallback(() => {
       const fetchLikes = async () => {
         try {
           const fetchedLikes = await getLibrary();
-          setBooks(fetchedLikes);
-        } catch (error) {
+            if(fetchedLikes === undefined) {
+                setIsLibraryEmpty(true);
+                return;
+            }
+
+            setBooks(fetchedLikes);
+            setIsLibraryEmpty(false);
+          } catch (error) {
           console.log(error);
         }
       };
@@ -35,17 +42,20 @@ export default function Likes({navigation, route}) {
         Sua Biblioteca 📖
       </Text>
       <View style={styles.pack}>
-        {books.map((book, index) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Book', {source: JSON.stringify(book)})}
-            key={index}>
-            <BookCard
-              place={index}
-              title={book.book_title}
-              cover={book.cover_url}
-            />
-          </TouchableOpacity>
-        ))}
+        {!isLibraryEmpty &&
+          books.map((book, index) => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Book', {source: JSON.stringify(book)})
+              }
+              key={index}>
+              <BookCard
+                place={index}
+                title={book.book_title}
+                cover={book.cover_url}
+              />
+            </TouchableOpacity>
+          ))}
       </View>
     </ScrollView>
   );

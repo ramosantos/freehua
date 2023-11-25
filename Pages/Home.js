@@ -17,10 +17,10 @@ const Stack = createNativeStackNavigator();
 export default function Home({navigation}) {
   return (
     <Tab.Navigator
+      backBehavior="history"
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
-          tabBarVisible: false,
       }}>
       <Tab.Screen
         name="Feed"
@@ -71,11 +71,12 @@ export default function Home({navigation}) {
         name="Shower"
         component={Shower}
         options={{
-          headerShown: false,
           headerTitleStyle: {
             fontSize: 24,
           },
-          tabBarVisible: false,
+          tabBarStyle: {
+            display: 'none',
+          },
           tabBarButton: () => null,
           headerTitleAlign: 'center',
         }}
@@ -84,6 +85,10 @@ export default function Home({navigation}) {
         name="Chat"
         component={Chat}
         options={{
+          headerShown: true,
+          tabBarStyle: {
+            display: 'none',
+          },
           headerLeft: ({color, size}) => (
             <TouchableOpacity
               style={{paddingLeft: 12}}
@@ -91,7 +96,6 @@ export default function Home({navigation}) {
               <Ionicons name="arrow-back" color={'white'} size={40} />
             </TouchableOpacity>
           ),
-          headerShown: true,
           tabBarButton: () => null,
         }}
       />

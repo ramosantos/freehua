@@ -127,22 +127,70 @@ export const getUserHistory = async () => {
     const userData = await getUserData();
     const userHistory = userData.user_history;
     const newEntries = Promise.all(
-      userHistory.slice(0, 5).reverse().map(async entry => {
-        const entryParentId = entry._key.path.segments[6];
-        const entryReference = doc(db, entry.path);
-        const entryParentReference = doc(db, 'books', entryParentId);
-        const entryParent = await getDoc(entryParentReference);
-        const entryParentName = entryParent.data().book_title;
-        const entryDoc = await getDoc(entryReference);
+      userHistory
+        .slice(0, 5)
+        .reverse()
+        .map(async entry => {
+          const entryParentId = entry._key.path.segments[6];
+          const entryReference = doc(db, entry.path);
+          const entryParentReference = doc(db, 'books', entryParentId);
+          const entryParent = await getDoc(entryParentReference);
+          const entryParentName = entryParent.data().book_title;
+          const entryDoc = await getDoc(entryReference);
           return {
             id: entryDoc.id,
+            chapter_parent_data: entryParent.data(),
             chapter_parent_name: entryParentName,
             ...entryDoc.data(),
           };
-      })
+        }),
     );
     return newEntries;
   } catch (error) {
     alert(error);
   }
+};
+
+export const wipeUserHistory = async () => {
+  try {
+    const userId = await getUser();
+    const userReference = doc(db, 'users', userId);
+    const wipedHistory = await updateDoc(userReference, {
+      user_history: [],
+    });
+    return true;
+  } catch (error) {
+    return false;
+    console.log(error);
+  }
+};
+
+export const postUserBiography = async input => {
+    const text = input.toString();
+    try {
+        const userId = await getUser();
+        const userReference = doc(db, 'users', userId);
+        const uploadedBio = await updateDoc(userReference, {
+            user_biography: text,
+        });
+        return true;
+    } catch (error) {
+        return false;
+        console.log(error);
+    }
+};
+
+export const changeUserName = async input => {
+    const text = input.toString();
+    try {
+        const userId = await getUser();
+        const userReference = doc(db, 'users', userId);
+        const uploadedName = await updateDoc(userReference, {
+            user_name: text,
+        });
+        return true;
+    } catch (error) {
+        return false;
+        console.log(error);
+    }
 };

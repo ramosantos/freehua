@@ -18,6 +18,7 @@ export default function Book({route, navigation}) {
   const [chapters, setChapters] = useState([]);
   const [color, setColor] = useState('white');
   const [wasPressed, setWasPressed] = useState(null);
+    const [isChaptersEmpty, setIsChaptersEmpty] = useState(true);
 
   const like = async () => {
     try {
@@ -54,7 +55,12 @@ export default function Book({route, navigation}) {
     const refreshChapters = async () => {
       try {
         const chaptersData = await getChapters(book.id);
+          if(chaptersData === undefined) {
+              setIsChaptersEmpty(true);
+              return;
+          }
         setChapters(chaptersData);
+        setIsChaptersEmpty(false);
       } catch (error) {
         alert(error);
       }
@@ -109,7 +115,7 @@ export default function Book({route, navigation}) {
         </TouchableOpacity>
       </View>
       <View style={styles.legend}>
-        {chapters.map((chapter, index) => (
+        {!isChaptersEmpty && chapters.map((chapter, index) => (
           <View style={{flex: 1, flexDirection: 'row'}} key={index}>
             <TouchableOpacity
               onPress={() => {
@@ -125,7 +131,7 @@ export default function Book({route, navigation}) {
                 backgroundColor: chapter.viewed ? '#872341' : '#144272',
               }}>
               <Text style={styles.subtitle}>
-                Capítulo {chapter.chapter_order} Ordem {index}
+                Capítulo {chapter.chapter_order}
               </Text>
               <Text style={styles.date}>
                 {chapter.chapter_release.toDate().toLocaleDateString('pt-BR')}{' '}

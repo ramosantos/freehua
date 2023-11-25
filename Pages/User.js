@@ -4,16 +4,20 @@ import styles from '../Styles/stylesUser';
 import {getUserData, getUserHistory} from '../Scripts/Logger';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default function User({navigation}) {
+export default function User({navigation, route}) {
   const [userData, setUserData] = useState([]);
   const [userHistory, setUserHistory] = useState([]);
   const [historyDropped, setHistoryDropped] = useState(false);
+  const [userBiography, setUserBiography] = useState('');
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const tookUser = await getUserData();
         setUserData(tookUser);
+        if (userData.user_biography !== '') {
+          setUserBiography(userData.user_biography);
+        }
       } catch (error) {
         alert(error);
       }
@@ -43,7 +47,7 @@ export default function User({navigation}) {
       <View style={styles.front}>
         <Image style={styles.picture} source={{uri: userData.user_picture}} />
         <Text style={styles.username}>{userData.user_name}</Text>
-        <Text style={styles.karma}>Karma: {userData.user_karma}</Text>
+        <Text style={styles.karma}>{userBiography}</Text>
       </View>
       <View style={styles.box_history}>
         <TouchableOpacity
@@ -55,6 +59,11 @@ export default function User({navigation}) {
         {userHistory !== [] &&
           userHistory.map((entry, index) => (
             <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Book', {
+                  source: JSON.stringify(entry.chapter_parent_data),
+                });
+              }}
               style={{
                 ...styles.box_entry,
                 backgroundColor: index % 2 === 0 ? '#144272' : '#0A2647',
