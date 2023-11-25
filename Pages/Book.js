@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Image, Text, View, ScrollView, TouchableOpacity} from 'react-native';
 import styles from '../Styles/stylesBook';
 import {getChapters} from '../Scripts/Booker';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useFocusEffect} from '@react-navigation/native';
 import {
   likeBook,
@@ -15,14 +15,14 @@ import {
 export default function Book({route, navigation}) {
   const {source} = route.params;
   const [chapters, setChapters] = useState([]);
-  const [color, setColor] = useState('black');
+  const [color, setColor] = useState('white');
   const [wasPressed, setWasPressed] = useState(null);
 
   const like = async () => {
     try {
       if (wasPressed) {
         await dislikeBook(source.id);
-        setColor('black');
+        setColor('white');
         setWasPressed(false);
       } else {
         await likeBook(source.id);
@@ -69,7 +69,7 @@ export default function Book({route, navigation}) {
           setColor('orange');
           setWasPressed(true);
         } else {
-          setColor('black');
+          setColor('white');
           setWasPressed(false);
         }
       } catch (error) {
@@ -104,7 +104,7 @@ export default function Book({route, navigation}) {
         </Text>
         <Text style={styles.summary}>{source.book_summary}</Text>
         <TouchableOpacity style={styles.like} onPress={like}>
-          <MaterialCommunityIcons name="book" color={color} size={42} />
+          <Ionicons name="bookmark" color={color} size={42} />
         </TouchableOpacity>
       </View>
       <View style={styles.legend}>
@@ -114,10 +114,11 @@ export default function Book({route, navigation}) {
             key={chapter.chapter_order}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Reader', {
+                navigation.navigate('Shower', {
                   file: JSON.stringify(chapter),
-                  order: chapter.chapter_order,
-                  parent: source,
+                  order: index-1,
+                  master: source,
+                  files: JSON.stringify(chapters),
                 });
               }}
               style={{
@@ -138,7 +139,7 @@ export default function Book({route, navigation}) {
                 backgroundColor: chapter.viewed ? 'orange' : '#2C74B3',
               }}
               onPress={() => handleToggleViewing(chapter, index)}>
-              <MaterialCommunityIcons
+              <Ionicons
                 name="eye"
                 color={chapter.viewed ? 'black' : 'white'}
                 size={42}

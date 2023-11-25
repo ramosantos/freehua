@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {View, Text, TextInput, TouchableOpacity, ScrollView} from 'react-native';
 import {sendComment, getComments} from '../Scripts/Chatter';
 import styles from '../Styles/stylesChat';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function Chat({navigation, route}) {
   const {chapter} = route.params;
@@ -64,7 +64,7 @@ export default function Chat({navigation, route}) {
           inputMode="text"
         />
         <TouchableOpacity style={{marginLeft: 12}} onPress={babble}>
-          <MaterialCommunityIcons name="send" color={'white'} size={36} />
+          <Ionicons name="send" color={'white'} size={36} />
         </TouchableOpacity>
       </View>
     </View>

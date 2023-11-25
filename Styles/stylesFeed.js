@@ -5,7 +5,7 @@ export default styles = StyleSheet.create({
     marginVertical: 10,
   },
   genre: {
-      color: 'black',
+      color: 'white',
     fontSize: 26,
     fontStyle: 'italic',
     marginLeft: 16,

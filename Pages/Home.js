@@ -2,13 +2,14 @@ import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feed from './Feed';
 import Likes from './Likes';
 import User from './User';
 import Book from './Book';
 import Config from './Config';
-import Reader from './Reader';
+import Shower from './Shower';
+import Chat from './Chat';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -19,6 +20,7 @@ export default function Home({navigation}) {
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
+          tabBarVisible: false,
       }}>
       <Tab.Screen
         name="Feed"
@@ -26,7 +28,7 @@ export default function Home({navigation}) {
         options={{
           tabBarLabel: 'Feed',
           tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="book" color={color} size={size} />
+            <Ionicons name="book" color={color} size={size} />
           ),
         }}
       />
@@ -36,7 +38,7 @@ export default function Home({navigation}) {
         options={{
           tabBarLabel: 'Likes',
           tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="heart" color={color} size={size} />
+            <Ionicons name="bookmarks" color={color} size={size} />
           ),
         }}
       />
@@ -46,11 +48,7 @@ export default function Home({navigation}) {
         options={{
           tabBarLabel: 'User',
           tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons
-              name="account-circle"
-              color={color}
-              size={size}
-            />
+            <Ionicons name="person" color={color} size={size} />
           ),
         }}
       />
@@ -60,7 +58,7 @@ export default function Home({navigation}) {
         options={{
           tabBarLabel: 'Config',
           tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="cog" color={color} size={size} />
+            <Ionicons name="settings-sharp" color={color} size={size} />
           ),
         }}
       />
@@ -70,14 +68,33 @@ export default function Home({navigation}) {
         options={{tabBarButton: () => null}}
       />
       <Stack.Screen
-          name="Reader"
-          component={Reader}
-          options={{
-            tabBarVisible: false,
-            tabBarButton: () => null,
-            tabBarStyle: { display: 'none' },
-          }}
-        />
+        name="Shower"
+        component={Shower}
+        options={{
+          headerShown: false,
+          headerTitleStyle: {
+            fontSize: 24,
+          },
+          tabBarVisible: false,
+          tabBarButton: () => null,
+          headerTitleAlign: 'center',
+        }}
+      />
+      <Stack.Screen
+        name="Chat"
+        component={Chat}
+        options={{
+          headerLeft: ({color, size}) => (
+            <TouchableOpacity
+              style={{paddingLeft: 12}}
+              onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" color={'white'} size={40} />
+            </TouchableOpacity>
+          ),
+          headerShown: true,
+          tabBarButton: () => null,
+        }}
+      />
     </Tab.Navigator>
   );
 }
