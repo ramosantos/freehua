@@ -15,18 +15,18 @@ import {
 export default function Book({route, navigation}) {
   const {source} = route.params;
   const [chapters, setChapters] = useState([]);
-  const [color, setColor] = useState('white');
+  const [color, setColor] = useState('black');
   const [wasPressed, setWasPressed] = useState(null);
 
   const like = async () => {
     try {
       if (wasPressed) {
         await dislikeBook(source.id);
-        setColor('white');
+        setColor('black');
         setWasPressed(false);
       } else {
         await likeBook(source.id);
-        setColor('orange');
+        setColor('#FF914D');
         setWasPressed(true);
       }
     } catch (error) {
@@ -69,7 +69,7 @@ export default function Book({route, navigation}) {
           setColor('orange');
           setWasPressed(true);
         } else {
-          setColor('white');
+          setColor('black');
           setWasPressed(false);
         }
       } catch (error) {
