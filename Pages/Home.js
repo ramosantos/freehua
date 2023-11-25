@@ -70,14 +70,14 @@ export default function Home({navigation}) {
         options={{tabBarButton: () => null}}
       />
       <Stack.Screen
-        name="Reader"
-        component={Reader}
-        options={{
-          tabBarVisible: false,
-          tabBarButton: () => null,
-          tabBarStyle: {display: 'flex'},
-        }}
-      />
+          name="Reader"
+          component={Reader}
+          options={{
+            tabBarVisible: false,
+            tabBarButton: () => null,
+            tabBarStyle: { display: 'none' },
+          }}
+        />
     </Tab.Navigator>
   );
 }

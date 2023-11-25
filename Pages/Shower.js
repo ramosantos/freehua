@@ -1,27 +1,39 @@
-import React, {useState} from 'react';
-import {StyleSheet, Dimensions, TouchableOpacity, View} from 'react-native';
+import React, {useState, useEffect, useReducer} from 'react';
+import {
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Pdf from 'react-native-pdf';
+import {rememberChapter} from '../Scripts/Booker';
 
 export default function Shower({navigation, route}) {
+  const {chapter} = route.params;
+  const loadedChapter = JSON.parse(chapter);
+  const [pdfSource, setPdfSource] = useState(loadedChapter.chapter_content);
   const [isHeaderVisible, setHeaderVisible] = useState(true);
   const [pagesAtMoment, setPagesAtMoment] = useState(0);
 
   const toggleHeaderVisibility = () => {
     setHeaderVisible(!isHeaderVisible);
-    navigation.setOptions({headerShown: isHeaderVisible,});
-      navigation.getParent().setParams({ tabBarOptions: { visible: !isHeaderVisible } });
+    navigation.setOptions({headerShown: isHeaderVisible});
+    navigation
+      .getParent()
+      .setParams({tabBarOptions: {visible: !isHeaderVisible}});
   };
-
-  const {chapter} = route.params;
-  const loadedChapter = JSON.parse(chapter);
 
   return (
     <View style={{flex: 1}}>
       <Pdf
-        source={{uri: loadedChapter.chapter_content}}
+        source={{uri: pdfSource, cache: false}}
         trustAllCerts={false}
         onPageChanged={(page, numberOfPages) => {
-            //setPagesAtMoment(page);
+          setPagesAtMoment(page);
+            if(page === numberOfPages) {
+                rememberChapter(chapter);
+            }
         }}
         onError={error => {
           console.log(error);
@@ -32,6 +44,11 @@ export default function Shower({navigation, route}) {
         style={styles.headerButton}
         onPress={toggleHeaderVisibility}
       />
+      {isHeaderVisible || (
+        <View style={styles.box_pages}>
+          <Text style={styles.text_pages}>{pagesAtMoment}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -45,11 +62,19 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
   },
   headerButton: {
-    backgroundColor: 'red',
     position: 'absolute',
-    top: kindOfHeight + 40,
-    left: kindOfWidth + 20,
-    width: kindOfWidth - 40,
-    height: kindOfHeight - 80,
+    top: kindOfHeight,
+    left: kindOfWidth,
+    width: kindOfWidth,
+    height: kindOfHeight,
+  },
+  box_pages: {
+    backgroundColor: 'black',
+    height: 36,
+  },
+  text_pages: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 22,
   },
 });

@@ -3,7 +3,14 @@ import {Image, Text, View, ScrollView, TouchableOpacity} from 'react-native';
 import styles from '../Styles/stylesBook';
 import {getChapters} from '../Scripts/Booker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {likeBook, dislikeBook, getLike} from '../Scripts/Booker';
+import {useFocusEffect} from '@react-navigation/native';
+import {
+  likeBook,
+  dislikeBook,
+  getLike,
+  rememberChapter,
+  forgetChapter,
+} from '../Scripts/Booker';
 
 export default function Book({route, navigation}) {
   const {source} = route.params;
@@ -14,12 +21,12 @@ export default function Book({route, navigation}) {
   const like = async () => {
     try {
       if (wasPressed) {
-        const wasDisliked = await dislikeBook(source.id);
+        await dislikeBook(source.id);
         setColor('white');
         setWasPressed(false);
       } else {
-        const wasLiked = await likeBook(source.id);
-        setColor('red');
+        await likeBook(source.id);
+        setColor('orange');
         setWasPressed(true);
       }
     } catch (error) {
@@ -27,14 +34,39 @@ export default function Book({route, navigation}) {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const toggleChapterViewing = async (chapter, wasViewed) => {
+    try {
+      if (wasViewed) {
+        await forgetChapter(chapter);
+        return false;
+      } else {
+        await rememberChapter(chapter);
+        return true;
+      }
+    } catch (error) {
+      alert(error);
+      return wasViewed;
+    }
+  };
+
+  useFocusEffect(() => {
+    const refreshChapters = async () => {
       try {
         const chaptersData = await getChapters(source.id);
         setChapters(chaptersData);
+      } catch (error) {
+        alert(error);
+      }
+    };
+    refreshChapters();
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
         const alreadyLiked = await getLike(source.id);
         if (alreadyLiked === true) {
-          setColor('red');
+          setColor('orange');
           setWasPressed(true);
         } else {
           setColor('white');
@@ -46,6 +78,20 @@ export default function Book({route, navigation}) {
     };
     fetchData();
   }, [source]);
+
+  const handleToggleViewing = async (chapter, index) => {
+    try {
+      const newChapters = [...chapters];
+      const toggle = await toggleChapterViewing(
+        JSON.stringify(chapter),
+        chapter.viewed,
+      );
+      newChapters[index].viewed = toggle;
+      setChapters(newChapters);
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   return (
     <ScrollView style={styles.area}>
@@ -63,21 +109,42 @@ export default function Book({route, navigation}) {
       </View>
       <View style={styles.legend}>
         {chapters.map((chapter, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => {
-              const ordering = index + 1;
-              navigation.navigate('Reader', {
-                file: JSON.stringify(chapter),
-                order: ordering,
-              });
-            }}
-            style={styles.strip}>
-            <Text style={styles.subtitle}>Capítulo {index + 1}</Text>
-            <Text style={styles.date}>
-              {chapter.chapter_release.toDate().toLocaleDateString('pt-BR')}
-            </Text>
-          </TouchableOpacity>
+          <View
+            style={{flex: 1, flexDirection: 'row'}}
+            key={chapter.chapter_order}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Reader', {
+                  file: JSON.stringify(chapter),
+                  order: chapter.chapter_order,
+                  parent: source,
+                });
+              }}
+              style={{
+                ...styles.strip,
+                backgroundColor: chapter.viewed ? '#872341' : '#144272',
+              }}>
+              <Text style={styles.subtitle}>
+                Capítulo {chapter.chapter_order}
+              </Text>
+              <Text style={styles.date}>
+                {chapter.chapter_release.toDate().toLocaleDateString('pt-BR')}{' '}
+                por {chapter.chapter_poster_name}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                ...styles.viewed,
+                backgroundColor: chapter.viewed ? 'orange' : '#2C74B3',
+              }}
+              onPress={() => handleToggleViewing(chapter, index)}>
+              <MaterialCommunityIcons
+                name="eye"
+                color={chapter.viewed ? 'black' : 'white'}
+                size={42}
+              />
+            </TouchableOpacity>
+          </View>
         ))}
       </View>
     </ScrollView>

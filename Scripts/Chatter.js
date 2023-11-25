@@ -7,7 +7,7 @@ import {
   collection,
   query,
 } from 'firebase/firestore';
-import {getUser} from '../Scripts/Booker';
+import {getUser} from '../Scripts/Logger';
 const db = getFirestore();
 
 const getChapterReference = parent => {
@@ -62,7 +62,7 @@ export const getComments = async parent => {
           comment_poster_name: commentPosterName,
           comment_poster_picture: commentPosterPicture,
           ...commentData,
-          comment_release: commentData.comment_release.toDate().toLocaleString(),
+          comment_release: commentData.comment_release.toDate().toLocaleString('pt-BR'),
         };
       }),
     );

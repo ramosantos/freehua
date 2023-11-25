@@ -1,5 +1,5 @@
-import {TouchableOpacity} from 'react-native';
-
+import {TouchableOpacity, View} from 'react-native';
+import Select from 'react-select';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,7 +11,6 @@ export default function Reader({route, navigation}) {
 
   return (
     <Stack.Navigator initialRouteName={'Shower'}>
-
       <Stack.Screen
         name="Shower"
         component={Shower}
@@ -22,6 +21,18 @@ export default function Reader({route, navigation}) {
           headerRight: ({color, size}) => (
             <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
               <MaterialCommunityIcons name="chat" color={'white'} size={40} />
+            </TouchableOpacity>
+          ),
+          headerLeft: ({color, size}) => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Book', {source: route.params.parent})
+              }>
+              <MaterialCommunityIcons
+                name="library"
+                color={'white'}
+                size={40}
+              />
             </TouchableOpacity>
           ),
         }}

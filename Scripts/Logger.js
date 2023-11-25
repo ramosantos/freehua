@@ -107,3 +107,15 @@ export const getUserData = async () => {
         console.log(error);
     }
 }
+
+export async function getUser() {
+  try {
+    const userCredential = await EncryptedStorage.getItem('userCredential');
+    const userData = JSON.parse(userCredential);
+    const userIdentification = userData.user.uid;
+    return userIdentification;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}

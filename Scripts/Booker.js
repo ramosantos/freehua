@@ -13,6 +13,7 @@ import {
   ref,
 } from 'firebase/firestore';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {getUser, getUserData} from './Logger';
 
 const db = getFirestore();
 
@@ -39,30 +40,33 @@ export async function getBooks() {
 export async function getChapters(reference) {
   const chaptersReference = collection(db, `books/${reference}/chapters`);
   try {
+    const userData = await getUserData();
     const snapshot = await getDocs(query(chaptersReference));
-    const newChapters = snapshot.docs.map(doc => {
-          return {
-            id: doc.id,
-            ...doc.data(),
-          };
-        });
+    const newChapters = Promise.all(
+      snapshot.docs.map(async chapter => {
+        const chapterPosterId = chapter.data().chapter_poster;
+        const chapterPosterReference = doc(db, 'users', chapterPosterId);
+        const chapterPoster = await getDoc(chapterPosterReference);
+        const poster = chapterPoster.exists()
+          ? chapterPoster.data().user_name
+          : 'Scanlation';
+
+        const userHistory = JSON.stringify(userData.user_history);
+        const alreadyViewed = userHistory.includes(chapter.id);
+
+        return {
+          id: chapter.id,
+          chapter_poster_name: poster,
+          viewed: alreadyViewed,
+          ...chapter.data(),
+        };
+      }),
+    );
 
     return newChapters;
   } catch (error) {
     console.error('Error fetching chapters: ', error);
     return [];
-  }
-}
-
-export async function getUser() {
-  try {
-    const userCredential = await EncryptedStorage.getItem('userCredential');
-    const userData = JSON.parse(userCredential);
-    const userIdentification = userData.user.uid;
-    return userIdentification;
-  } catch (error) {
-    console.log(error);
-    return false;
   }
 }
 
@@ -153,5 +157,56 @@ export const getLibrary = async () => {
     }
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const rememberChapter = async loadedChapter => {
+  try {
+    const userId = await getUser();
+    const chapter = JSON.parse(loadedChapter);
+    const chapterParentId = chapter.chapter_parent._key.path.segments[6];
+    const chapterReference = doc(
+      db,
+      'books',
+      chapterParentId,
+      'chapters',
+      chapter.id,
+    );
+    const userReference = doc(db, 'users', userId);
+
+    await updateDoc(userReference, {
+      user_history: arrayUnion(chapterReference),
+    });
+
+    return true;
+  } catch (error) {
+    alert(error);
+    console.error('Error remembering chapter:', error);
+    return false;
+  }
+};
+
+export const forgetChapter = async loadedChapter => {
+  try {
+    const userId = await getUser();
+    const userReference = doc(db, 'users', userId);
+    const chapter = JSON.parse(loadedChapter);
+    const chapterParentId = chapter.chapter_parent._key.path.segments[6];
+    const chapterReference = doc(
+      db,
+      'books',
+      chapterParentId,
+      'chapters',
+      chapter.id,
+    );
+    await updateDoc(userReference, {
+      user_history: arrayRemove(chapterReference),
+    });
+
+    return true;
+  } catch (error) {
+    alert(error);
+    console.error('Error remembering chapter:', error);
+    return false;
   }
 };

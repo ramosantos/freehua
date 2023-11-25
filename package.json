@@ -29,7 +29,8 @@
     "react-native-screens": "^3.25.0",
     "react-native-storage": "^0.2.4",
     "react-native-vector-icons": "^10.0.0",
-    "react-pdf": "^7.5.0"
+    "react-pdf": "^7.5.0",
+    "react-select": "^5.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

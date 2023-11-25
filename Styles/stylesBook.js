@@ -35,10 +35,11 @@ export default styles = StyleSheet.create({
     textAlign: 'justify',
   },
   strip: {
+    flex: 1,
     height: 60,
-    backgroundColor: '#144272',
     justifyContent: 'center',
     paddingHorizontal: 20,
+    marginBottom: 6,
   },
   legend: {
     color: 'white',
@@ -53,5 +54,10 @@ export default styles = StyleSheet.create({
   },
   date: {
     color: 'white',
+  },
+  viewed: {
+      height: '91%',
+      paddingHorizontal: 12,
+      justifyContent: 'center',
   },
 });

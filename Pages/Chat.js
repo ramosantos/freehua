@@ -41,7 +41,7 @@ export default function Chat({navigation, route}) {
     <View style={styles.area}>
       <ScrollView style={styles.area_comments}>
         {messages.map((message, index) => (
-          <View style={{marginVertical: 12}}>
+          <View key={index} style={{marginVertical: 12}}>
             <View style={styles.box_header}>
               <Text style={styles.text_header}>
                 {message.comment_poster_name}
