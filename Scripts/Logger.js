@@ -18,6 +18,14 @@ import {
   getFirestore,
   getDoc,
 } from 'firebase/firestore';
+import {ref, getStorage, uploadBytes, getDownloadURL} from 'firebase/storage';
+import {takePicture} from './Fetcher';
+import RNFS from 'react-native-fs';
+import {decode} from 'base-64';
+
+if (typeof atob === 'undefined') {
+  global.atob = decode;
+}
 
 const auth = FIREBASE_AUTH;
 const db = FIRESTORE_DB;
@@ -36,7 +44,8 @@ export const logUser = async (email, password) => {
     setPersistence(auth, inMemoryPersistence);
     return true;
   } catch (error) {
-    Alert.alert(error.message);
+    alert(error.message);
+    return false;
   }
 };
 
@@ -48,7 +57,8 @@ export const checkLogin = async () => {
       return true;
     }
   } catch (error) {
-    Alert.alert(error.message);
+    alert(error.message);
+    return false;
   }
 };
 
@@ -69,7 +79,8 @@ export const registerUser = async (email, password, username) => {
     }
   } catch (error) {
     console.log(error.message);
-    Alert.alert(error.message);
+    alert(error.message);
+    return false;
   }
 };
 
@@ -107,6 +118,7 @@ export const getUserData = async () => {
     return;
   } catch (error) {
     console.log(error);
+    return false;
   }
 };
 
@@ -139,7 +151,10 @@ export const getUserHistory = async () => {
           const entryDoc = await getDoc(entryReference);
           return {
             id: entryDoc.id,
-            chapter_parent_data: entryParent.data(),
+            chapter_parent_data: {
+              id: entryParent.id,
+              ...entryParent.data(),
+            },
             chapter_parent_name: entryParentName,
             ...entryDoc.data(),
           };
@@ -148,6 +163,7 @@ export const getUserHistory = async () => {
     return newEntries;
   } catch (error) {
     alert(error);
+    return false;
   }
 };
 
@@ -160,37 +176,68 @@ export const wipeUserHistory = async () => {
     });
     return true;
   } catch (error) {
-    return false;
     console.log(error);
+    return false;
   }
 };
 
 export const postUserBiography = async input => {
-    const text = input.toString();
-    try {
-        const userId = await getUser();
-        const userReference = doc(db, 'users', userId);
-        const uploadedBio = await updateDoc(userReference, {
-            user_biography: text,
-        });
-        return true;
-    } catch (error) {
-        return false;
-        console.log(error);
-    }
+  const text = input.toString();
+  try {
+    const userId = await getUser();
+    const userReference = doc(db, 'users', userId);
+    const uploadedBio = await updateDoc(userReference, {
+      user_biography: text,
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
 export const changeUserName = async input => {
-    const text = input.toString();
-    try {
-        const userId = await getUser();
-        const userReference = doc(db, 'users', userId);
-        const uploadedName = await updateDoc(userReference, {
-            user_name: text,
-        });
-        return true;
-    } catch (error) {
-        return false;
-        console.log(error);
-    }
+  const text = input.toString();
+  try {
+    const userId = await getUser();
+    const userReference = doc(db, 'users', userId);
+    const uploadedName = await updateDoc(userReference, {
+      user_name: text,
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
+export const changeUserPicture = async () => {
+  try {
+    const storage = getStorage();
+    const userId = await getUser();
+    const takenPictureMetadata = await takePicture();
+    const takenPicturePath = takenPictureMetadata.path;
+    const takenPictureBase = await RNFS.readFile(takenPicturePath, 'base64');
+    const takenPictureBinary = base64ToArrayBuffer(takenPictureBase);
+    const userPictureReference = ref(storage, `profiles/${userId}`);
+    const userPictureUploaded = await uploadBytes(
+      userPictureReference,
+      takenPictureBinary,
+        {contentType: takenPictureMetadata.type},
+    );
+      if (userPictureUploaded) return true;
+  } catch (error) {
+    console.error('Error changing user picture:', error);
+      return false;
+  }
+};
+
+const base64ToArrayBuffer = base64 => {
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
 };

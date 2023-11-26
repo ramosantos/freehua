@@ -12,26 +12,57 @@ import {
   updateDoc,
   ref,
   orderBy,
+  where,
 } from 'firebase/firestore';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {getUser, getUserData} from './Logger';
 
 const db = getFirestore();
 
-export async function getBooks() {
+export async function getBooks(rawGenre) {
+  const genre = rawGenre.toString();
   const booksReference = collection(db, 'books');
-  const askBooks = query(booksReference);
+  const askBooks = query(booksReference, where('book_tags', '==', genre));
 
   try {
     const snapshot = await getDocs(askBooks);
     const newBooks = snapshot.docs.map(doc => {
       const bookData = doc.data();
+
       return {
         id: doc.id,
         ...bookData,
       };
     });
     return newBooks;
+  } catch (error) {
+    console.error('Error fetching books: ', error);
+    return undefined;
+  }
+}
+
+export async function getFeedByGenres(genres) {
+  try {
+    const fetchedGenres = await Promise.all(
+      genres.map(async genre => {
+        try {
+          const fetchedBooks = await getBooks(genre);
+          return {
+            type: genre,
+            data: fetchedBooks || [],
+            isEmpty: !fetchedBooks || fetchedBooks.length === 0,
+          };
+        } catch (error) {
+          console.error(`Error fetching books for genre ${genre}: `, error);
+          return {
+            type: genre,
+            data: [],
+            isEmpty: true,
+          };
+        }
+      }),
+    );
+    return fetchedGenres;
   } catch (error) {
     console.error('Error fetching books: ', error);
     return undefined;
@@ -132,8 +163,8 @@ export const getLike = async reference => {
 export const getLibrary = async () => {
   try {
     const userData = await getUserData();
-    if (userData.exists()) {
-      const libraryData = userData.data().user_likes;
+    if (userData) {
+      const libraryData = userData.user_likes;
       const fetchedLikes = await Promise.all(
         libraryData.map(async like => {
           const likeReference = doc(db, like.path);
@@ -147,8 +178,8 @@ export const getLibrary = async () => {
       return fetchedLikes;
     }
   } catch (error) {
-      return undefined;
     console.log(error);
+    return undefined;
   }
 };
 
@@ -203,4 +234,22 @@ export const forgetChapter = async loadedChapter => {
   }
 };
 
-
+export const searchBookTitle = async title => {
+    try {
+        const search = title.toString();
+        const libraryReference = collection(db, 'books');
+        const askTitledBooks = query(libraryReference, where('book_title','>=',search), where('book_title','<=', search+'\\uf8ff'));
+        const searchedBooks = await getDocs(askTitledBooks);
+        const newSearches = searchedBooks.docs.map(book=>{
+            const bookData = book.data();
+            return {
+                id: book.id,
+                ...bookData,
+            };
+        });
+        return newSearches;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+};

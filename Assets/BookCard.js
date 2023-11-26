@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
   card: {
     aspectRatio: 1 / 1.4,
-    height: 260,
+    height: 240,
     margin: 4,
     justifyContent: 'flex-end',
     borderRadius: 12,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
   label: {
     backgroundColor: '#144272',
-    height: 'fit-content',
+    maxHeight: 80,
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
   },

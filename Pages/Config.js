@@ -1,7 +1,18 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  KeyboardAvoidingView,
+} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {wipeUserHistory, postUserBiography, changeUserName} from '../Scripts/Logger';
+import {
+  wipeUserHistory,
+  postUserBiography,
+  changeUserName,
+    changeUserPicture
+} from '../Scripts/Logger';
 import styles from '../Styles/stylesConfig';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -17,24 +28,25 @@ export default function Config({navigation}) {
     }
   };
 
-  const changePicture = async () => {
+  const alterUserPicture = async () => {
     try {
-      navigation.navigate('Login');
+        const alteredPicture = await changeUserPicture();
+        if (alteredPicture) alert('Foto mudou');
     } catch (error) {
       console.error('Error changing picture:', error);
     }
   };
 
-  const changeUsername = async text => {
+  const alterUserName = async text => {
     try {
-        const changedUsername = await changeUserName(text);
-        if (changedUsername) alert ('Parabéns! Agora você é ' + text);
+      const alteredUserName = await changeUserName(text);
+      if (alteredUserName) alert('Parabéns! Agora você é ' + text);
     } catch (error) {
-      console.error('Error changing username:', error);
+      console.error('Error altering username:', error);
     }
   };
 
-  const writeBiography = async text => {
+  const writeUserBiography = async text => {
     try {
       const changedBiography = await postUserBiography(text);
       if (changedBiography) alert('Biografia alterada');
@@ -43,7 +55,7 @@ export default function Config({navigation}) {
     }
   };
 
-  const eraseHistory = async () => {
+  const eraseUserHistory = async () => {
     try {
       const erasedHistory = await wipeUserHistory();
       if (erasedHistory) alert('Histórico apagado');
@@ -56,22 +68,22 @@ export default function Config({navigation}) {
     {text: 'Desconectar', function: logoff, needsKeyboard: false},
     {
       text: 'Inserir foto de perfil',
-      function: changePicture,
-      needsKeyboard: true,
+      function: alterUserPicture,
+      needsKeyboard: false,
     },
     {
       text: 'Alterar nome de usuário',
-      function: changeUsername,
+      function: alterUserName,
       needsKeyboard: true,
     },
     {
       text: 'Mudar biografia da conta',
-      function: writeBiography,
+      function: writeUserBiography,
       needsKeyboard: true,
     },
     {
       text: 'Apagar histórico de leitura',
-      function: eraseHistory,
+      function: eraseUserHistory,
       needsKeyboard: false,
     },
   ];
@@ -101,7 +113,7 @@ export default function Config({navigation}) {
             key={index}
             need={task.needsKeyboard}
             dropped={droppedKeyboards[index]}
-            job={task.function}
+          job={task.function}
           />
         </View>
       ))}
@@ -119,9 +131,10 @@ const DroppingKeyboard = ({need, dropped, job}) => {
             style={styles.text_input}
             value={inputText}
             onChangeText={newInputText => setInputText(newInputText)}
-            placeholder="Mesma coisa"
           />
-          <TouchableOpacity style={styles.icon_input} onPress={()=>job(inputText)}>
+          <TouchableOpacity
+            style={styles.icon_input}
+            onPress={() => job(inputText)}>
             <Ionicons name="send" color={'white'} size={36} />
           </TouchableOpacity>
         </View>

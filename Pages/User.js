@@ -24,7 +24,7 @@ export default function User({navigation, route}) {
     };
 
     fetchUser();
-  }, []);
+  }, [userData]);
 
   const toggleHistory = async () => {
     if (historyDropped) {
