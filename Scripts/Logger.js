@@ -215,29 +215,22 @@ export const changeUserPicture = async () => {
   try {
     const storage = getStorage();
     const userId = await getUser();
-    const takenPictureMetadata = await takePicture();
-    const takenPicturePath = takenPictureMetadata.path;
-    const takenPictureBase = await RNFS.readFile(takenPicturePath, 'base64');
-    const takenPictureBinary = base64ToArrayBuffer(takenPictureBase);
+    const chosenPicture = await takePicture();
+    const chosenPictureLink = chosenPicture.path;
     const userPictureReference = ref(storage, `profiles/${userId}`);
-    const userPictureUploaded = await uploadBytes(
-      userPictureReference,
-      takenPictureBinary,
-        {contentType: takenPictureMetadata.type},
-    );
-      if (userPictureUploaded) return true;
+    const chosenPictureRequest = await fetch(chosenPictureLink);
+    const chosenPictureBlob = await chosenPictureRequest.blob();
+    const uploadedChosenPicture = await uploadBytes(userPictureReference, chosenPictureBlob);
+    const uploadedChosenPictureLink = await getDownloadURL(userPictureReference);
+    const userReference = doc(db, 'users', userId);
+    const switchedUserPicture = updateDoc(userReference, {
+        user_picture: uploadedChosenPictureLink,
+    });
+    if (switchedUserPicture) return true;
+    
   } catch (error) {
     console.error('Error changing user picture:', error);
       return false;
   }
 };
 
-const base64ToArrayBuffer = base64 => {
-  const binaryString = atob(base64);
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return bytes;
-};

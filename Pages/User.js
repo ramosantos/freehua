@@ -1,30 +1,37 @@
-import {useState, useEffect} from 'react';
-import {TouchableOpacity, ScrollView, View, Image, Text} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { TouchableOpacity, ScrollView, View, Image, Text } from 'react-native';
 import styles from '../Styles/stylesUser';
-import {getUserData, getUserHistory} from '../Scripts/Logger';
+import { getUserData, getUserHistory } from '../Scripts/Logger';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default function User({navigation, route}) {
+export default function User({ navigation, route }) {
   const [userData, setUserData] = useState([]);
   const [userHistory, setUserHistory] = useState([]);
   const [historyDropped, setHistoryDropped] = useState(false);
   const [userBiography, setUserBiography] = useState('');
+  const [hasUser, setHasUser] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const tookUser = await getUserData();
-        setUserData(tookUser);
-        if (userData.user_biography !== '') {
-          setUserBiography(userData.user_biography);
+        if (tookUser === undefined || tookUser.length === 0) {
+          setHasUser(false);
+          return;
         }
+        setUserData(tookUser);
+        if (tookUser.user_biography !== '') {
+          setUserBiography(tookUser.user_biography);
+        }
+        setHasUser(true);
       } catch (error) {
         alert(error);
+        setHasUser(false);
       }
     };
 
     fetchUser();
-  }, [userData]);
+  }, []);
 
   const toggleHistory = async () => {
     if (historyDropped) {
@@ -42,10 +49,11 @@ export default function User({navigation, route}) {
     }
   };
 
+  const UserProfile = () => {
   return (
-    <ScrollView>
+    <>
       <View style={styles.front}>
-        <Image style={styles.picture} source={{uri: userData.user_picture}} />
+        <Image style={styles.picture} source={{ uri: userData.user_picture }} />
         <Text style={styles.username}>{userData.user_name}</Text>
         <Text style={styles.karma}>{userBiography}</Text>
       </View>
@@ -55,8 +63,15 @@ export default function User({navigation, route}) {
           style={styles.box_history_header_update}>
           <Text style={styles.text_history_header}>Ver Histórico</Text>
         </TouchableOpacity>
+        <HistoryEntries />
+      </View>
+    </>
+  );
+};
 
-        {userHistory !== [] &&
+    const HistoryEntries = () => {
+        return (
+userHistory.length > 0 &&
           userHistory.map((entry, index) => (
             <TouchableOpacity
               onPress={() => {
@@ -73,8 +88,10 @@ export default function User({navigation, route}) {
                 Capítulo {entry.chapter_order} de {entry.chapter_parent_name}
               </Text>
             </TouchableOpacity>
-          ))}
-      </View>
-    </ScrollView>
-  );
+          ))
+        );
+    };
+
+  return <ScrollView>{hasUser && <UserProfile />}</ScrollView>;
 }
+
