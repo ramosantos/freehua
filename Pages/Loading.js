@@ -1,7 +1,7 @@
 import {useEffect} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ActivityIndicator} from 'react-native';
 import {checkLogin} from '../Scripts/Logger';
-
+import styles from '../Styles/stylesLoading';
 export default Loading = ({navigation}) => {
     useEffect(() => {
     const check = async () => {
@@ -16,8 +16,16 @@ export default Loading = ({navigation}) => {
   }, []);
 
     return(
-        <View>
-            <Text>Carregando</Text>
+
+        
+        <View style={styles.loading}>
+          <ActivityIndicator
+            animating={true}
+            color="orange"
+            size='large'
+          />
+          <Text>Carregando...</Text>
+           
         </View>
     );
 }
