@@ -115,10 +115,10 @@ export const getUserData = async () => {
     if (fetchedUser) {
       return fetchedUser.data();
     }
-    return;
+    return undefined;
   } catch (error) {
     console.log(error);
-    return false;
+    return undefined;
   }
 };
 
@@ -160,10 +160,10 @@ export const getUserHistory = async () => {
           };
         }),
     );
-    return newEntries;
+    return newEntries ? newEntries : undefined;
   } catch (error) {
-    alert(error);
-    return false;
+    console.log(error);
+    return undefined;
   }
 };
 

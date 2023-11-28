@@ -10,6 +10,7 @@ import styles from '../Styles/stylesFeed';
 import BookCard from '../Assets/BookCard';
 import {getLibrary} from '../Scripts/Booker';
 import {useFocusEffect} from '@react-navigation/native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 export default function Likes({navigation, route}) {
   const [books, setBooks] = useState([]);
@@ -21,12 +22,15 @@ export default function Likes({navigation, route}) {
         try {
           const fetchedLikes = await getLibrary();
             if(fetchedLikes === undefined) {
-                setIsLibraryEmpty(true);
+                const rescuedLikes = await EncryptedStorage.getItem('localLikes');
+                setBooks(JSON.parse(rescuedLikes));
+                setIsLibraryEmpty(false);
                 return;
             }
 
             setBooks(fetchedLikes);
             setIsLibraryEmpty(false);
+            await EncryptedStorage.setItem('localLikes', JSON.stringify(fetchedLikes));
           } catch (error) {
           console.log(error);
         }

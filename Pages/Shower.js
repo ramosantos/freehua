@@ -64,7 +64,7 @@ export default function Shower({navigation, route}) {
   return (
     <View style={{flex: 1}}>
       <Pdf
-        source={{uri: pdfSource, cache: true}}
+        source={{uri: pdfSource, cache: true, cacheFileName: loadedChapter.id}}
         trustAllCerts={false}
         onPageChanged={(page, numberOfPages) => {
           setPagesAtMoment(page);

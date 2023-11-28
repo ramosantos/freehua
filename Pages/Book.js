@@ -125,7 +125,7 @@ const refreshChapters = async () => {
         <Image style={styles.cover} source={{uri: book.cover_url}} />
         <Text style={styles.title}>{book.book_title}</Text>
         <Text style={styles.author}>
-          {book.book_type === 'Manhwa' ? `Manhwa` : `Manhua`} feito por{' '}
+          {book.book_type === 'manhwa' ? `🇰🇷 Manhwa` : `🇨🇳 Manhua`} feito por{' '}
           {book.book_author}
         </Text>
         <Text style={styles.summary}>{book.book_summary}</Text>

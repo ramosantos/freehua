@@ -26,7 +26,8 @@ export default styles = StyleSheet.create({
   author: {
     color: 'white',
     fontSize: 20,
-    marginBottom: 20,
+    marginVertical: 20,
+    textAlign: 'center',
   },
   summary: {
     color: 'white',

@@ -23,7 +23,7 @@ export default function Feed({navigation}) {
   const [feed, setFeed] = useState();
   const genres = [
     ['romance', 'xianxia', 'adventure'],
-    ['Romancezinho', 'Cultivando...', 'Hora de Aventura!'],
+    ['Romance ❤️', 'Cultivo (Xianxia) 🍃', 'Aventura ⚔️'],
   ];
 
   useEffect(() => {
@@ -112,8 +112,8 @@ export default function Feed({navigation}) {
             </TouchableOpacity>
           </>
         )) || (
-          <Text style={{color: 'orange', fontStyle: 'italic', fontSize: 32}}>
-            Modo Offline
+          <Text style={{color: 'orange', fontStyle: 'italic', fontSize: 36}}>
+            Modo Local
           </Text>
         )}
       </View>

@@ -1,10 +1,10 @@
 import {StyleSheet} from 'react-native';
 
 export default styles = StyleSheet.create({
-    box_feed: {
-        marginLeft: 18,
-        flexDirection: 'column',
-    },
+  box_feed: {
+    marginLeft: 18,
+    flexDirection: 'column',
+  },
   strip: {
     marginVertical: 10,
   },
@@ -25,7 +25,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 32,
-      marginLeft: 18,
+    marginLeft: 18,
     marginRight: 24,
     justifyContent: 'center',
   },
