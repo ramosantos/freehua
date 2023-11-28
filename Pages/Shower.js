@@ -10,6 +10,7 @@ import {
 import Pdf from 'react-native-pdf';
 import {rememberChapter} from '../Scripts/Booker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Immersive } from 'react-native-immersive'
 
 export default function Shower({navigation, route}) {
   const {file, files, order, master} = route.params;
@@ -20,8 +21,11 @@ export default function Shower({navigation, route}) {
   const [pagesAtMoment, setPagesAtMoment] = useState(0);
   const [isLastChapter, setIsLastChapter] = useState(false);
   const [isFirstChapter, setIsFirstChapter] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(true);
 
   const toggleHeaderVisibility = () => {
+    setIsFullscreen(!isFullscreen);
+    Immersive.setImmersive(!isFullscreen);
     setHeaderVisible(!isHeaderVisible);
     navigation.setOptions({headerShown: !isHeaderVisible});
     navigation.setParams({tabBarOptions: {visible: !isHeaderVisible}});
@@ -50,6 +54,7 @@ export default function Shower({navigation, route}) {
         </TouchableOpacity>
       ),
     });
+      Immersive.setImmersive(isFullscreen);
   }, [file, order]);
 
   const goTo = async direction => {
@@ -62,41 +67,48 @@ export default function Shower({navigation, route}) {
   };
 
   return (
-    <View style={{flex: 1}}>
-      <Pdf
-        source={{uri: pdfSource, cache: true, cacheFileName: loadedChapter.id}}
-        trustAllCerts={false}
-        onPageChanged={(page, numberOfPages) => {
-          setPagesAtMoment(page);
-          if (page === numberOfPages) {
-            rememberChapter(file);
-          }
-        }}
-        onError={error => {
-          console.log(error);
-        }}
-        style={styles.pdf}
-      />
-      <TouchableOpacity
-        style={styles.headerButton}
-        onPress={toggleHeaderVisibility}
-      />
-      {isHeaderVisible && (
-        <View style={styles.box_pages}>
-          {!isFirstChapter && (
-            <TouchableOpacity style={styles.next} onPress={() => goTo(+1)}>
-              <Ionicons name="arrow-back" color={'white'} size={40} />
-            </TouchableOpacity>
-          )}
-          <Text style={styles.text_pages}>p. {pagesAtMoment}</Text>
-          {!isLastChapter && (
-            <TouchableOpacity style={styles.next} onPress={() => goTo(-1)}>
-              <Ionicons name="arrow-forward" color={'white'} size={40} />
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
-    </View>
+      <View style={{flex: 1}}>
+        <Pdf
+          source={{
+            uri: pdfSource,
+            cache: true,
+            cacheFileName: loadedChapter.id,
+          }}
+          fitWidth={true}
+          fitPolicy={0}
+          spacing={0}
+          trustAllCerts={false}
+          onPageChanged={(page, numberOfPages) => {
+            setPagesAtMoment(page);
+            if (page === numberOfPages) {
+              rememberChapter(file);
+            }
+          }}
+          onError={error => {
+            console.log(error);
+          }}
+          style={styles.pdf}
+        />
+        <TouchableOpacity
+          style={styles.headerButton}
+          onPress={toggleHeaderVisibility}
+        />
+        {isHeaderVisible && (
+          <View style={styles.box_pages}>
+            {!isFirstChapter && (
+              <TouchableOpacity style={styles.next} onPress={() => goTo(+1)}>
+                <Ionicons name="arrow-back" color={'white'} size={40} />
+              </TouchableOpacity>
+            )}
+            <Text style={styles.text_pages}>p. {pagesAtMoment}</Text>
+            {!isLastChapter && (
+              <TouchableOpacity style={styles.next} onPress={() => goTo(-1)}>
+                <Ionicons name="arrow-forward" color={'white'} size={40} />
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+      </View>
   );
 }
 
