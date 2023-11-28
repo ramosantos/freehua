@@ -4,6 +4,7 @@ export default styles = StyleSheet.create({
   box_feed: {
     marginLeft: 18,
     flexDirection: 'column',
+    
   },
   strip: {
     marginVertical: 10,
@@ -24,31 +25,32 @@ export default styles = StyleSheet.create({
   box_search_header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 32,
+    marginVertical: 22,
     marginLeft: 18,
     marginRight: 24,
     justifyContent: 'center',
+    
   },
   text_search: {
     flex: 1,
-    height: 50,
+    height: 40,
     borderColor: '#195491',
     borderWidth: 2,
     paddingHorizontal: 12,
     backgroundColor: '#0A2647',
-    color: 'orange',
-    fontSize: 18,
-    borderTopLeftRadius: 4,
-    borderBottomLeftRadius: 4,
+    color: 'white',
+    fontSize: 13,
+    borderTopLeftRadius: 75,
+    borderBottomLeftRadius: 75,
   },
   icon_search: {
     backgroundColor: '#2C74B3',
-    height: 50,
+    height: 40,
     width: '20%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderTopRightRadius: 4,
-    borderBottomRightRadius: 4,
+    borderTopRightRadius: 75,
+    borderBottomRightRadius: 75,
     
   },
 });

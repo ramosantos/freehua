@@ -7,9 +7,9 @@ export default styles = StyleSheet.create({
   },
   picture: {
     aspectRatio: 1 / 1,
-    height: 300,
-    borderRadius: 100,
-    borderColor: '#205295',
+    height: 250,
+    borderRadius: 200,
+    borderColor: 'orange',
     borderWidth: 1,
   },
   username: {
@@ -35,17 +35,24 @@ export default styles = StyleSheet.create({
   box_history_header_update: {
     backgroundColor: '#205295',
     justifyContent: 'center',
-height: 60,
+    height: 60,
+    margin:10,
+    borderRadius:20,
     flex: 1,
   },
   box_entry: {
+    backgroundColor:"#144272",
     justifyContent: 'center',
     paddingHorizontal: 20,
     height: 50,
+    margin:10,
+    borderRadius:20,
+    
   },
   text_entry: {
     fontStyle: 'italic',
     color: 'white',
     fontSize: 16,
+    
   },
 });

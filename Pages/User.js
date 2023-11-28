@@ -84,10 +84,7 @@ export default function User({navigation, route}) {
               source: JSON.stringify(entry.chapter_parent_data),
             });
           }}
-          style={{
-            ...styles.box_entry,
-            backgroundColor: index % 2 === 0 ? '#144272' : '#0A2647',
-          }}
+          style={styles.box_entry}
           key={index}>
           <Text style={styles.text_entry}>
             Capítulo {entry.chapter_order} de {entry.chapter_parent_name}

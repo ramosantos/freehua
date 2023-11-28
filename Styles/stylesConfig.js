@@ -5,10 +5,12 @@ export default styles = StyleSheet.create({
         height: 60,
         backgroundColor: '#205295',
         justifyContent: 'center',
+        margin:10,
+        borderRadius:20,
+        alignItems:"center"
     }, 
     label: {
         fontSize: 24,
-        marginLeft: 24,
         fontStyle: 'italic',
         color: 'white',
     },

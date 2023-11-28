@@ -37,11 +37,12 @@ const styles = StyleSheet.create({
   },
   card: {
     aspectRatio: 1 / 1.4,
-    height: 240,
+    height: 210,
     margin: 4,
     justifyContent: 'flex-end',
     borderRadius: 12,
     textAlign: 'center',
+  
   },
   label: {
     backgroundColor: '#144272',

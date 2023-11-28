@@ -103,7 +103,7 @@ export default function Config({navigation}) {
           <TouchableOpacity
             style={{
               ...styles.button,
-              backgroundColor: index % 2 === 0 ? '#144272' : '#205295',
+             
             }}
             onPress={() => {
               task.needsKeyboard ? handlePress(index) : task.function();

@@ -23,8 +23,8 @@ export default function Feed({navigation}) {
   const [searches, setSearches] = useState();
   const [feed, setFeed] = useState();
   const genres = [
-    ['romance', 'xianxia', 'adventure'],
-    ['Romance ❤️', 'Cultivo (Xianxia) 🍃', 'Aventura ⚔️'],
+    ['adventure', 'xianxia', 'romance' ],
+    ['Aventura ⚔️', 'Cultivo (Xianxia) 🍃','Romance ❤️', ],
   ];
 
   useEffect(() => {
@@ -106,6 +106,7 @@ export default function Feed({navigation}) {
 
   return (
     <View style={{flex: 1}}>
+    <ScrollView style={styles.box_feed}>
       <View style={styles.box_search_header}>
         {(!isOffline && (
           <>
@@ -113,6 +114,7 @@ export default function Feed({navigation}) {
               style={styles.text_search}
               onChangeText={newInputText => setInputText(newInputText)}
               value={inputText}
+              placeholder='Pesquisar...'
             />
             <TouchableOpacity style={styles.icon_search} onPress={search}>
               <Ionicons name="search" color={"white"} size={32}/>
@@ -128,7 +130,7 @@ export default function Feed({navigation}) {
           </Text>
         )}
       </View>
-      <ScrollView style={styles.box_feed}>
+      
         {!isFeedEmpty &&
           !isSearching &&
           feed.map(
@@ -141,7 +143,8 @@ export default function Feed({navigation}) {
                 />
               ),
           )}
-        {isSearching && <BookRoll bookcase={searches} title={inputText} />}
+        {isSearching && <BookRoll bookcase={searches} title={inputText}/>}
+        
       </ScrollView>
     </View>
   );
