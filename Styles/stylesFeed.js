@@ -49,5 +49,6 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     borderTopRightRadius: 4,
     borderBottomRightRadius: 4,
+    
   },
 });

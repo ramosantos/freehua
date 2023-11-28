@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
+  Alert,
 } from 'react-native';
 import styles from '../Styles/stylesFeed';
 import BookCard from '../Assets/BookCard';
@@ -54,6 +55,8 @@ export default function Feed({navigation}) {
     fetchFeed();
   }, []);
 
+  
+
   const BookRoll = ({bookcase, title}) => {
     return (
       <View style={styles.strip}>
@@ -96,6 +99,10 @@ export default function Feed({navigation}) {
       alert(error);
     }
   };
+  
+ 
+
+  
 
   return (
     <View style={{flex: 1}}>
@@ -108,8 +115,12 @@ export default function Feed({navigation}) {
               value={inputText}
             />
             <TouchableOpacity style={styles.icon_search} onPress={search}>
-              <Ionicons name="search" color={'white'} size={32} />
+              <Ionicons name="search" color={"white"} size={32}/>
             </TouchableOpacity>
+
+            
+
+            
           </>
         )) || (
           <Text style={{color: 'orange', fontStyle: 'italic', fontSize: 36}}>
