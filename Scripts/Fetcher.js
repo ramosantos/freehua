@@ -6,7 +6,7 @@ export const takePicture = async () => {
       width: 400,
       height: 400,
       cropping: true,
-        includeBase64: true,
+      includeBase64: true,
     });
     return takenPicture;
   } catch (error) {

@@ -4,6 +4,7 @@ import styles from '../Styles/stylesBook';
 import {getChapters} from '../Scripts/Booker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useFocusEffect} from '@react-navigation/native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {
   likeBook,
   dislikeBook,
@@ -14,11 +15,12 @@ import {
 
 export default function Book({route, navigation}) {
   const {source} = route.params;
-    const book = JSON.parse(source);
+  const book = JSON.parse(source);
   const [chapters, setChapters] = useState([]);
   const [color, setColor] = useState('white');
   const [wasPressed, setWasPressed] = useState(null);
-    const [isChaptersEmpty, setIsChaptersEmpty] = useState(true);
+  const [isChaptersEmpty, setIsChaptersEmpty] = useState(true);
+  const [knowLike, setKnowLike] = useState(false);
 
   const like = async () => {
     try {
@@ -51,27 +53,44 @@ export default function Book({route, navigation}) {
     }
   };
 
-  useFocusEffect(() => {
-    const refreshChapters = async () => {
+    useFocusEffect(React.useCallback(()=>{
+const refreshChapters = async () => {
       try {
         const chaptersData = await getChapters(book.id);
-          if(chaptersData === undefined) {
-              setIsChaptersEmpty(true);
-              return;
-          }
+
+        if (chaptersData === undefined) {
+          const rescuedChapters = await EncryptedStorage.getItem(`${book.id}`);
+          setChapters(JSON.parse(rescuedChapters));
+          setIsChaptersEmpty(false);
+          return;
+        }
+
         setChapters(chaptersData);
         setIsChaptersEmpty(false);
+
+        if (chaptersData !== undefined) {
+          await EncryptedStorage.setItem(
+            `${book.id}`,
+            JSON.stringify(chaptersData),
+          );
+        }
       } catch (error) {
         alert(error);
       }
     };
-    refreshChapters();
-  });
 
+    refreshChapters();
+    },[book.id]));
+    
   useEffect(() => {
     const fetchData = async () => {
       try {
         const alreadyLiked = await getLike(book.id);
+        if (alreadyLiked === undefined) {
+          setKnowLike(false);
+          return;
+        }
+        setKnowLike(true);
         if (alreadyLiked === true) {
           setColor('orange');
           setWasPressed(true);
@@ -110,48 +129,53 @@ export default function Book({route, navigation}) {
           {book.book_author}
         </Text>
         <Text style={styles.summary}>{book.book_summary}</Text>
-        <TouchableOpacity style={styles.like} onPress={like}>
-          <Ionicons name="bookmark" color={color} size={42} />
-        </TouchableOpacity>
+        {knowLike && (
+          <>
+            <TouchableOpacity style={styles.like} onPress={like}>
+              <Ionicons name="bookmark" color={color} size={42} />
+            </TouchableOpacity>
+          </>
+        )}
       </View>
       <View style={styles.legend}>
-        {!isChaptersEmpty && chapters.map((chapter, index) => (
-          <View style={{flex: 1, flexDirection: 'row'}} key={index}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Shower', {
-                  file: JSON.stringify(chapter),
-                  order: index,
-                  master: JSON.stringify(book),
-                  files: JSON.stringify(chapters),
-                });
-              }}
-              style={{
-                ...styles.strip,
-                backgroundColor: chapter.viewed ? '#872341' : '#144272',
-              }}>
-              <Text style={styles.subtitle}>
-                Capítulo {chapter.chapter_order}
-              </Text>
-              <Text style={styles.date}>
-                {chapter.chapter_release.toDate().toLocaleDateString('pt-BR')}{' '}
-                por {chapter.chapter_poster_name}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                ...styles.viewed,
-                backgroundColor: chapter.viewed ? 'orange' : '#2C74B3',
-              }}
-              onPress={() => handleToggleViewing(chapter, index)}>
-              <Ionicons
-                name="eye"
-                color={chapter.viewed ? 'black' : 'white'}
-                size={42}
-              />
-            </TouchableOpacity>
-          </View>
-        ))}
+        {!isChaptersEmpty &&
+          chapters.map((chapter, index) => (
+            <View style={{flex: 1, flexDirection: 'row'}} key={index}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Shower', {
+                    file: JSON.stringify(chapter),
+                    order: index,
+                    master: JSON.stringify(book),
+                    files: JSON.stringify(chapters),
+                  });
+                }}
+                style={{
+                  ...styles.strip,
+                  backgroundColor: chapter.viewed ? '#872341' : '#144272',
+                }}>
+                <Text style={styles.subtitle}>
+                  Capítulo {chapter.chapter_order}
+                </Text>
+                <Text style={styles.date}>
+                  {' '}
+                  por {chapter.chapter_poster_name}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  ...styles.viewed,
+                  backgroundColor: chapter.viewed ? 'orange' : '#2C74B3',
+                }}
+                onPress={() => handleToggleViewing(chapter, index)}>
+                <Ionicons
+                  name="eye"
+                  color={chapter.viewed ? 'black' : 'white'}
+                  size={42}
+                />
+              </TouchableOpacity>
+            </View>
+          ))}
       </View>
     </ScrollView>
   );

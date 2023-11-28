@@ -28,7 +28,11 @@ export default function Shower({navigation, route}) {
   };
 
   useEffect(() => {
+    setPdfSource(loadedChapter.chapter_content);
+    setIsLastChapter(order === 0);
+    setIsFirstChapter(order === waitlist.length - 1);
     navigation.setOptions({
+      title: `Capítulo ${loadedChapter.chapter_order}`,
       headerLeft: ({color, size}) => (
         <TouchableOpacity
           style={{paddingLeft: 12}}
@@ -38,16 +42,6 @@ export default function Shower({navigation, route}) {
           <Ionicons name="book" color={'white'} size={40} />
         </TouchableOpacity>
       ),
-    });
-  }, []);
-
-  useEffect(() => {
-    setPdfSource(loadedChapter.chapter_content);
-      console.log(pdfSource);
-    setIsLastChapter(order === 0);
-    setIsFirstChapter(order === waitlist.length - 1);
-    navigation.setOptions({
-      title: `Capítulo ${loadedChapter.chapter_order}`,
       headerRight: ({color, size}) => (
         <TouchableOpacity
           style={{paddingRight: 12}}
@@ -70,7 +64,7 @@ export default function Shower({navigation, route}) {
   return (
     <View style={{flex: 1}}>
       <Pdf
-        source={{uri: pdfSource, cache: false}}
+        source={{uri: pdfSource, cache: true}}
         trustAllCerts={false}
         onPageChanged={(page, numberOfPages) => {
           setPagesAtMoment(page);
@@ -94,7 +88,7 @@ export default function Shower({navigation, route}) {
               <Ionicons name="arrow-back" color={'white'} size={40} />
             </TouchableOpacity>
           )}
-          <Text style={styles.text_pages}>{pagesAtMoment}</Text>
+          <Text style={styles.text_pages}>p. {pagesAtMoment}</Text>
           {!isLastChapter && (
             <TouchableOpacity style={styles.next} onPress={() => goTo(-1)}>
               <Ionicons name="arrow-forward" color={'white'} size={40} />

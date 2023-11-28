@@ -62,17 +62,25 @@ export async function getFeedByGenres(genres) {
         }
       }),
     );
-    return fetchedGenres;
+
+    let emptyGenresCount = genres.length;
+    for (const genre of fetchedGenres) {
+      if (genre.data.length !== 0) emptyGenresCount = emptyGenresCount - 1;
+    }
+
+    return emptyGenresCount === genres.length ? undefined : fetchedGenres;
   } catch (error) {
     console.error('Error fetching books: ', error);
     return undefined;
   }
 }
 
+
 export async function getChapters(reference) {
   const chaptersReference = collection(db, `books/${reference}/chapters`);
   try {
     const userData = await getUserData();
+      if(!userData) return undefined;
     const snapshot = await getDocs(
       query(chaptersReference, orderBy('chapter_order', 'desc')),
     );
@@ -100,7 +108,7 @@ export async function getChapters(reference) {
     return newChapters;
   } catch (error) {
     console.error('Error fetching chapters: ', error);
-    return [];
+    return undefined;
   }
 }
 
@@ -147,16 +155,13 @@ export const getLike = async reference => {
       const userLikes = userDoc.user_likes;
       const userLikesString = JSON.stringify(userLikes);
       const isLiked = userLikesString.includes(reference);
-      if (isLiked) {
-        return true;
-      }
-    } else {
-      console.log('User document not found');
-      return false;
+        return isLiked ? true : false;
     }
+
+    return undefined;
   } catch (error) {
     console.error(error);
-    return null;
+    return undefined;
   }
 };
 
@@ -235,21 +240,25 @@ export const forgetChapter = async loadedChapter => {
 };
 
 export const searchBookTitle = async title => {
-    try {
-        const search = title.toString();
-        const libraryReference = collection(db, 'books');
-        const askTitledBooks = query(libraryReference, where('book_title','>=',search), where('book_title','<=', search+'\\uf8ff'));
-        const searchedBooks = await getDocs(askTitledBooks);
-        const newSearches = searchedBooks.docs.map(book=>{
-            const bookData = book.data();
-            return {
-                id: book.id,
-                ...bookData,
-            };
-        });
-        return newSearches;
-    } catch (error) {
-        console.log(error);
-        return false;
-    }
+  try {
+    const search = title.toString();
+    const libraryReference = collection(db, 'books');
+    const askTitledBooks = query(
+      libraryReference,
+      where('book_title', '>=', search),
+      where('book_title', '<=', search + '\\uf8ff'),
+    );
+    const searchedBooks = await getDocs(askTitledBooks);
+    const newSearches = searchedBooks.docs.map(book => {
+      const bookData = book.data();
+      return {
+        id: book.id,
+        ...bookData,
+      };
+    });
+    return newSearches;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };

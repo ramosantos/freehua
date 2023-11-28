@@ -65,7 +65,7 @@ export default function Config({navigation}) {
   };
 
   const settingOptions = [
-    {text: 'Desconectar', function: logoff, needsKeyboard: false},
+    
     {
       text: 'Inserir foto de perfil',
       function: alterUserPicture,
@@ -86,6 +86,7 @@ export default function Config({navigation}) {
       function: eraseUserHistory,
       needsKeyboard: false,
     },
+      {text: 'Desconectar', function: logoff, needsKeyboard: false},
   ];
 
   const handlePress = index => {
