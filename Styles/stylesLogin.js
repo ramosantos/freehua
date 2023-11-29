@@ -50,6 +50,22 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
+    terms: {
+        marginVertical: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    terms_check: {
+        backgroundColor: 'white',
+        borderColor: 'orange',
+        borderRadius: 4,
+        marginRight: 20,
+        height: 20,
+        width: 20,
+    },
+    terms_label: {
+        color: 'white',
+    },
 });
 
 export default styles;

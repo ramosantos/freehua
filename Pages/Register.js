@@ -17,11 +17,17 @@ export default function Register({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+    const [agreed, setAgreed] = useState(false);
 
   const register = async () => {
     if (email === '' || password === '' || username === '') {
       Alert.alert('Põe tudo, pô');
       return null;
+    }
+
+    if (!agreed) {
+        Alert.alert('Aceite os termos para se registrar');
+        return null;
     }
 
     setLoading(true);
@@ -37,7 +43,7 @@ export default function Register({navigation}) {
     <ImageBackground
       style={styles.area}
       source={require('../Assets/landscape.jpg')}>
-      <View style={{...styles.box, height: 500}}>
+      <View style={{...styles.box, height: 540}}>
         <Text style={styles.title}>Registrar</Text>
         <View>
           <Text style={styles.subtitle}>Nome de usuário</Text>
@@ -71,6 +77,15 @@ export default function Register({navigation}) {
             value={password}
             secureTextEntry={true}
           />
+        </View>
+        <View style={styles.terms}>
+            <TouchableOpacity style={{...styles.terms_check, backgroundColor: agreed ? 'orange' : 'white'}} onPress={()=>setAgreed(!agreed)}/>
+          <View>
+            <Text style={styles.terms_label}>Eu li e aceito</Text>
+            <TouchableOpacity onPress={()=>navigation.navigate('Policy')}>
+              <Text style={{...styles.terms_label, color: 'orange'}}>os termos de uso do Freehua</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         {loading ? (
           <ActivityIndicator size="large" />
