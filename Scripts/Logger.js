@@ -4,6 +4,7 @@ import {
   signInWithCredential,
   inMemoryPersistence,
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   updateProfile,
 } from 'firebase/auth';
 import {Alert} from 'react-native';
@@ -234,3 +235,12 @@ export const changeUserPicture = async () => {
   }
 };
 
+export const recoverPassword = async email => {
+    try {
+        const recovery = await sendPasswordResetEmail(auth, email);
+        return recovery;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+};

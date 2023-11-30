@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import styles from '../Styles/stylesLogin';
-import {logUser} from '../Scripts/Logger';
+import {logUser, recoverPassword} from '../Scripts/Logger';
 
 export default Login = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -32,11 +32,28 @@ export default Login = ({navigation}) => {
     setLoading(false);
   };
 
+    const recover = async () => {
+        if (email === "") {
+            Alert.alert('Insira o email da conta');
+            return null;
+        } 
+
+        try {
+            setLoading(true);
+            const recovery = await recoverPassword(email);
+            if (recovery) Alert.alert('Um email de recuperação foi enviado');
+        } catch (error) {
+            Alert.alert(error);
+        } 
+
+        setLoading(false);
+    };
+
   return (
     <ImageBackground
       style={styles.area}
       source={require('../Assets/landscape.jpg')}>
-      <View style={{...styles.box, height: 420}}>
+      <View style={{...styles.box, height: 500}}>
         <Text style={styles.title}>Entrar</Text>
         <View>
           <Text style={styles.subtitle}>Email</Text>
@@ -71,6 +88,11 @@ export default Login = ({navigation}) => {
               style={styles.button}
               onPress={() => navigation.navigate('Register')}>
               <Text style={styles.label}>Cadastrar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={recover}>
+              <Text style={styles.label}>Recuperar Senha</Text>
             </TouchableOpacity>
           </View>
         )}
