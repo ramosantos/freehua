@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   TextInput,
   KeyboardAvoidingView,
+  Modal,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {
@@ -15,9 +16,26 @@ import {
 } from '../Scripts/Logger';
 import styles from '../Styles/stylesConfig';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as Animatable from 'react-native-animatable';
+import CostomAlert from '../Scripts/CostomAlert';
+import { applyActionCode } from 'firebase/auth';
+
+  
+
 
 export default function Config({navigation}) {
   const [droppedKeyboards, setDroppedKeyboards] = useState({});
+  //const [visi, setVisi] = useState();
+
+  const [alertVisible, setAlertVisible] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
+  
+  const shoewModol= (mensage) =>{
+    
+    setAlertVisible(true);
+    setAlertMessage(mensage);
+    console.log(alertMessage)
+  }
 
   const logoff = async () => {
     try {
@@ -32,8 +50,12 @@ export default function Config({navigation}) {
     try {
         const alteredPicture = await changeUserPicture();
         if (alteredPicture) alert('Foto mudou');
+
+        
+
     } catch (error) {
       console.error('Error changing picture:', error);
+     
     }
   };
 
@@ -58,11 +80,22 @@ export default function Config({navigation}) {
   const eraseUserHistory = async () => {
     try {
       const erasedHistory = await wipeUserHistory();
-      if (erasedHistory) alert('Histórico apagado');
-    } catch (error) {
-      console.error('Error erasing history:', error);
+      if (erasedHistory) {
+        
+        shoewModol("outra coisa pra ver se tipo....")
+      
+      }
+     
+
     }
+     catch (error) {
+      console.error('Error erasing history:', error);
+      
+    }
+
+    
   };
+
 
   const settingOptions = [
     
@@ -95,18 +128,26 @@ export default function Config({navigation}) {
       [index]: !prevState[index],
     }));
   };
+  
 
   return (
-    <KeyboardAvoidingView style={{flex: 1}}>
+    <KeyboardAvoidingView 
+    style={{flex: 1}}
+    animation="rubberBand"
+    useNativeDriver
+    >
       {settingOptions.map((task, index) => (
-        <View key={index}>
+
+        <Animatable.View key={index}>
           <TouchableOpacity
             style={{
               ...styles.button,
              
             }}
             onPress={() => {
-              task.needsKeyboard ? handlePress(index) : task.function();
+              task.needsKeyboard ? handlePress(index) : task.function(); 
+              
+              //this.showAlert();
             }}>
             <Text style={styles.label}>{task.text}</Text>
           </TouchableOpacity>
@@ -114,17 +155,29 @@ export default function Config({navigation}) {
             key={index}
             need={task.needsKeyboard}
             dropped={droppedKeyboards[index]}
-          job={task.function}
-          />
-        </View>
+            job={task.function}
+          /> 
+                      
+        </Animatable.View>
       ))}
+
+           
+        <CostomAlert title={alertMessage} ></CostomAlert>
+          
+            
+        
+       
     </KeyboardAvoidingView>
+
+
+    
   );
 }
 
 const DroppingKeyboard = ({need, dropped, job}) => {
   const [inputText, setInputText] = useState('');
   return (
+
     <>
       {need && dropped && (
         <View style={styles.box_input}>
@@ -136,8 +189,14 @@ const DroppingKeyboard = ({need, dropped, job}) => {
           <TouchableOpacity
             style={styles.icon_input}
             onPress={() => job(inputText)}>
-            <Ionicons name="send" color={'white'} size={36} />
+            <Ionicons name="send" color={'white'} size={36}/>
+            
           </TouchableOpacity>
+
+          
+              
+        
+          
         </View>
       )}
     </>

@@ -11,6 +11,7 @@ import BookCard from '../Assets/BookCard';
 import {getLibrary} from '../Scripts/Booker';
 import {useFocusEffect} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import * as Animatable from 'react-native-animatable';
 
 export default function Likes({navigation, route}) {
   const [books, setBooks] = useState([]);
@@ -45,7 +46,11 @@ export default function Likes({navigation, route}) {
       <Text style={{...styles.genre, marginTop: 16, textAlign: 'center'}}>
         Sua Biblioteca 📖
       </Text>
-      <View style={styles.pack}>
+      <Animatable.View 
+      style={styles.pack}
+      animation="bounceIn"
+      useNativeDriver
+      >
         {!isLibraryEmpty &&
           books.map((book, index) => (
             <TouchableOpacity
@@ -60,7 +65,7 @@ export default function Likes({navigation, route}) {
               />
             </TouchableOpacity>
           ))}
-      </View>
+      </Animatable.View>
     </ScrollView>
   );
 }

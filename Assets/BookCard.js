@@ -14,10 +14,11 @@ const BookCard = props => {
         style={styles.card}
         imageStyle={styles.cover}
         source={{uri: props.cover}}>
-        <View style={styles.label}>
-          <Text style={styles.title}>{props.title}</Text>
-        </View>
+        
       </ImageBackground>
+      <View style={styles.label}>
+          <Text style={styles.title} numberOfLines={2} >{props.title}</Text>
+        </View>
     </View>
   );
 };
@@ -29,9 +30,13 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: 'white',
     padding: 6,
+    
   },
-  cover: {
-    borderRadius: 8,
+  cover: { 
+    borderTopLeftRadius:8,
+    borderTopRightRadius:8,
+   
+    
     borderWidth: 1,
     borderColor: '#0A2647',
   },
@@ -39,6 +44,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1.4,
     height: 210,
     margin: 4,
+    marginBottom:0,
     justifyContent: 'flex-end',
     borderRadius: 12,
     textAlign: 'center',
@@ -47,8 +53,13 @@ const styles = StyleSheet.create({
   label: {
     backgroundColor: '#144272',
     maxHeight: 80,
+    minHeight:60,
+    maxWidth:160,
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
+    marginLeft:5,
+    marginRight:5,
+    
   },
 });
 

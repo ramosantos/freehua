@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {View, Text, ActivityIndicator} from 'react-native';
+import {View, Text, ActivityIndicator, Image} from 'react-native';
 import {checkLogin} from '../Scripts/Logger';
 import styles from '../Styles/stylesLoading';
 export default Loading = ({navigation}) => {
@@ -19,6 +19,8 @@ export default Loading = ({navigation}) => {
 
         
         <View style={styles.loading}>
+         
+             
           <ActivityIndicator
             animating={true}
             color="orange"

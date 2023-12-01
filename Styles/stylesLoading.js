@@ -5,5 +5,12 @@ loading:{
 
     alignItems:'center',
     marginTop:"80%",
-}
+},
+
+img:{
+
+    height:20,
+
+
+},
 });

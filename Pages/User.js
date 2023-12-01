@@ -4,7 +4,6 @@ import styles from '../Styles/stylesUser';
 import {getUserData, getUserHistory} from '../Scripts/Logger';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EncryptedStorage from 'react-native-encrypted-storage';
-
 export default function User({navigation, route}) {
   const [userData, setUserData] = useState([]);
   const [userHistory, setUserHistory] = useState([]);
@@ -69,6 +68,7 @@ export default function User({navigation, route}) {
             <Text style={styles.text_history_header}>Ver Histórico</Text>
           </TouchableOpacity>
           <HistoryEntries />
+          
         </View>
       </>
     );
@@ -89,7 +89,9 @@ export default function User({navigation, route}) {
           <Text style={styles.text_entry}>
             Capítulo {entry.chapter_order} de {entry.chapter_parent_name}
           </Text>
+          
         </TouchableOpacity>
+        
       ))
     );
   };

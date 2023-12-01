@@ -53,4 +53,13 @@ export default styles = StyleSheet.create({
     borderBottomRightRadius: 75,
     
   },
+  image:{
+
+    aspectRatio:0.8/1 ,
+    height:170,
+        
+
+  },
+
+  
 });

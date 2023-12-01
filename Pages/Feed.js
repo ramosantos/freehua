@@ -8,12 +8,14 @@ import {
   SafeAreaView,
   TextInput,
   Alert,
+  Image,
 } from 'react-native';
 import styles from '../Styles/stylesFeed';
 import BookCard from '../Assets/BookCard';
 import {getFeedByGenres, searchBookTitle} from '../Scripts/Booker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import * as Animatable from 'react-native-animatable';
 
 export default function Feed({navigation}) {
   const [isFeedEmpty, setIsFeedEmpty] = useState(true);
@@ -22,9 +24,10 @@ export default function Feed({navigation}) {
   const [inputText, setInputText] = useState('');
   const [searches, setSearches] = useState();
   const [feed, setFeed] = useState();
+  
   const genres = [
     ['adventure', 'xianxia', 'romance' ],
-    ['Aventura ⚔️', 'Cultivo (Xianxia) 🍃','Romance ❤️', ],
+    ['Aventura ⚔️', 'Cultivo (Xianxia) 🍃','Romance ❤️', ]
   ];
 
   useEffect(() => {
@@ -59,7 +62,13 @@ export default function Feed({navigation}) {
 
   const BookRoll = ({bookcase, title}) => {
     return (
-      <View style={styles.strip}>
+      <Animatable.View 
+      style={styles.strip}
+      animation="bounceIn"
+      useNativeDriver
+      >
+           
+      
         <Text style={styles.genre}>{title}</Text>
         <ScrollView
           horizontal
@@ -81,7 +90,7 @@ export default function Feed({navigation}) {
               </TouchableOpacity>
             ))}
         </ScrollView>
-      </View>
+      </Animatable.View>
     );
   };
 

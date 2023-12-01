@@ -30,4 +30,10 @@ export default styles = StyleSheet.create({
     icon_input: {
         marginLeft: 12,
     },
+
+    alertBox:{
+        backgroundColor:'#205295'
+    },
+
+    
 });
